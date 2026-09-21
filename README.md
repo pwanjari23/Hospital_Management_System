@@ -98,14 +98,53 @@ hospital-management-system/
 - **PostgreSQL**: v14.0 or higher
 - **Git**
 
-## 5. PostgreSQL Setup
+## 5. PostgreSQL via Docker Setup
 
-1. Start your local PostgreSQL server or container.
-2. Open your terminal or `psql` shell and create the database:
-   ```sql
-   CREATE DATABASE hms;
-   ```
-3. Ensure the database user has permissions to connect and manage tables in `hms`.
+PostgreSQL 16 runs locally in a Docker container managed via Docker Compose:
+
+### Prerequisites
+
+- **Docker Desktop** installed and running on your machine.
+
+### Starting PostgreSQL
+
+```bash
+npm run docker:up
+# Or: docker compose up -d
+```
+
+### Checking Container Health & Status
+
+```bash
+npm run docker:ps
+# Or: docker compose ps
+```
+
+### Viewing Container Logs
+
+```bash
+npm run docker:logs
+# Or: docker compose logs -f postgres
+```
+
+### Stopping PostgreSQL
+
+```bash
+npm run docker:down
+# Or: docker compose down
+```
+
+### Development Database Reset
+
+To completely purge development data and start fresh:
+
+```bash
+# CAUTION: Permanently deletes all local Docker database volume data
+docker compose down -v
+npm run docker:up
+npm run db:migrate
+npm run db:seed
+```
 
 ## 6. Environment Setup
 
@@ -117,17 +156,17 @@ Copy `.env.example` to `.env` in both `client` and `server`:
 cp server/.env.example server/.env
 ```
 
-Edit `server/.env` with your PostgreSQL credentials:
+Default configuration for Docker PostgreSQL:
 
 ```env
 NODE_ENV=development
 PORT=5000
 
-DB_HOST=localhost
+DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_NAME=hms
-DB_USER=postgres
-DB_PASSWORD=your_postgres_password
+DB_USER=hms_user
+DB_PASSWORD=hms_dev_password
 
 CLIENT_URL=http://localhost:5173
 ```
@@ -176,6 +215,11 @@ Run from the root directory:
 | `npm run db:seed`         | Seeds foundational roles, permissions, and mappings                   |
 | `npm run db:seed:undo`    | Rolls back seeders                                                    |
 | `npm run test:db`         | Runs the automated database constraints & tenant-isolation test suite |
+| `npm run docker:up`       | Starts PostgreSQL container in background (`docker compose up -d`)    |
+| `npm run docker:down`     | Stops PostgreSQL container (`docker compose down`)                    |
+| `npm run docker:logs`     | Views live PostgreSQL logs (`docker compose logs -f postgres`)        |
+| `npm run docker:restart`  | Restarts PostgreSQL container                                         |
+| `npm run docker:ps`       | Checks PostgreSQL container status and health                         |
 
 ## 9. Database Architecture & Multi-Tenancy
 

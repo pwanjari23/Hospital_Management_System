@@ -52,6 +52,23 @@ export const runVerification = async () => {
   const createdHospitalIds = [];
 
   try {
+    // Pre-clean any leftover test records from prior runs
+    const existingTestHospitals = await Hospital.findAll({
+      where: {
+        slug: ['alpha-general-hospital', 'beta-medical-center', 'another-alpha-hospital'],
+      },
+    });
+    if (existingTestHospitals.length > 0) {
+      const ids = existingTestHospitals.map((h) => h.id);
+      const testUsers = await User.findAll({ where: { hospitalId: ids }, attributes: ['id'] });
+      if (testUsers.length > 0) {
+        await UserRole.destroy({ where: { userId: testUsers.map((u) => u.id) } });
+      }
+      await User.destroy({ where: { hospitalId: ids } });
+      await HospitalSetting.destroy({ where: { hospitalId: ids } });
+      await Hospital.destroy({ where: { id: ids } });
+    }
+
     // -------------------------------------------------------------
     // Suite 1: Hospital Model & Constraints
     // -------------------------------------------------------------
@@ -116,8 +133,9 @@ export const runVerification = async () => {
       });
     }, 'Invalid role scope enum is rejected');
 
+    await Permission.destroy({ where: { name: 'test.custompermission' } });
     const testPermission = await Permission.create({
-      name: `test.perm.${Date.now()}`,
+      name: 'test.custompermission',
       description: 'Test permission',
     });
     assert(Boolean(testPermission.id), 'Permission can be created with UUID');
