@@ -9,7 +9,12 @@
     "server": "npm --prefix server run dev",
     "build": "npm --prefix client run build",
     "lint": "npm --prefix server run lint && npm --prefix client run lint",
-    "format": "prettier --write \"**/*.{js,jsx,json,css,md}\""
+    "format": "prettier --write \"**/*.{js,jsx,json,css,md}\"",
+    "db:migrate": "npm --prefix server run db:migrate",
+    "db:migrate:undo": "npm --prefix server run db:migrate:undo",
+    "db:seed": "npm --prefix server run db:seed",
+    "db:seed:undo": "npm --prefix server run db:seed:undo",
+    "test:db": "npm --prefix server run test:db"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",

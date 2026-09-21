@@ -8,7 +8,12 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "lint": "eslint src/",
-    "format": "prettier --write \"src/**/*.{js,json}\""
+    "format": "prettier --write \"src/**/*.{js,json}\"",
+    "db:migrate": "node src/database/migrator.js up",
+    "db:migrate:undo": "node src/database/migrator.js down",
+    "db:seed": "node src/database/migrator.js seed",
+    "db:seed:undo": "node src/database/migrator.js seed:undo",
+    "test:db": "node src/database/verify.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -18,7 +23,8 @@
     "morgan": "^1.10.0",
     "pg": "^8.13.3",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.5"
+    "sequelize": "^6.37.5",
+    "umzug": "^3.8.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

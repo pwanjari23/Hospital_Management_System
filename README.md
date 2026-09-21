@@ -159,20 +159,34 @@ cd server && npm install && cd ..
 cd client && npm install && cd ..
 ```
 
-## 8. Development Commands
+## 8. Development & Database Commands
 
 Run from the root directory:
 
-| Command          | Action                                                     |
-| ---------------- | ---------------------------------------------------------- |
-| `npm run dev`    | Starts both server and client concurrently                 |
-| `npm run server` | Starts backend Express server with auto-reload (`nodemon`) |
-| `npm run client` | Starts Vite development server at `http://localhost:5173`  |
-| `npm run build`  | Builds the client for production                           |
-| `npm run lint`   | Runs ESLint on both server and client                      |
-| `npm run format` | Runs Prettier across all codebase files                    |
+| Command                   | Action                                                                |
+| ------------------------- | --------------------------------------------------------------------- |
+| `npm run dev`             | Starts both server and client concurrently                            |
+| `npm run server`          | Starts backend Express server with auto-reload (`nodemon`)            |
+| `npm run client`          | Starts Vite development server at `http://localhost:5173`             |
+| `npm run build`           | Builds the client for production                                      |
+| `npm run lint`            | Runs ESLint on both server and client                                 |
+| `npm run format`          | Runs Prettier across all codebase files                               |
+| `npm run db:migrate`      | Runs all pending database migrations                                  |
+| `npm run db:migrate:undo` | Rolls back the last applied migration                                 |
+| `npm run db:seed`         | Seeds foundational roles, permissions, and mappings                   |
+| `npm run db:seed:undo`    | Rolls back seeders                                                    |
+| `npm run test:db`         | Runs the automated database constraints & tenant-isolation test suite |
 
-## 9. Health Check Endpoint
+## 9. Database Architecture & Multi-Tenancy
+
+The system employs a shared-database multi-tenant PostgreSQL architecture:
+
+- **Tenant Root**: `Hospital` (UUID PK, unique slug, status enum)
+- **Tenant-Owned Entities**: `User` (tenant-scoped unique `(hospital_id, email)`), `HospitalSetting` (`(hospital_id, key)` unique)
+- **System Entities**: `Role` (`SUPER_ADMIN` platform role vs. `HOSPITAL_ADMIN`, `DOCTOR`, etc. hospital roles), `Permission`, `RolePermission`
+- **Tenant Scoping**: All tenant-owned queries must scope by the authenticated hospital context (`hospitalId`).
+
+## 10. Health Check Endpoint
 
 Once the server is running, the health endpoint can be tested:
 

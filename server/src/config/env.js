@@ -19,7 +19,7 @@ if (missingVariables.length > 0) {
   console.error('\n' + '='.repeat(60));
   console.error(
     `Startup Error: Missing required environment variable(s): ${missingVariables.join(', ')}.\n` +
-    `Please set these variables in server/.env (refer to server/.env.example).`
+      `Please set these variables in server/.env (refer to server/.env.example).`
   );
   console.error('='.repeat(60) + '\n');
   process.exit(1);
