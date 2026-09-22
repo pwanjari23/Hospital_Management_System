@@ -23,16 +23,13 @@ User.init(
     },
     hospitalId: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
       field: 'hospital_id',
       references: {
         model: 'hospitals',
         key: 'id',
       },
       onDelete: 'RESTRICT',
-      validate: {
-        notNull: { msg: 'hospitalId is required' },
-      },
     },
     name: {
       type: DataTypes.STRING,
@@ -91,6 +88,14 @@ User.init(
         unique: true,
         fields: ['hospital_id', 'email'],
         name: 'users_hospital_id_email_unique',
+      },
+      {
+        unique: true,
+        fields: ['email'],
+        where: {
+          hospital_id: null,
+        },
+        name: 'users_platform_email_unique',
       },
       {
         fields: ['status'],

@@ -14,6 +14,7 @@
     "db:migrate:undo": "npm --prefix server run db:migrate:undo",
     "db:seed": "npm --prefix server run db:seed",
     "db:seed:undo": "npm --prefix server run db:seed:undo",
+    "test": "npm --prefix server run test",
     "test:db": "npm --prefix server run test:db",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",

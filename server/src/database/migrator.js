@@ -9,7 +9,7 @@ const serverRoot = path.resolve(__dirname, '../../');
 
 export const migrator = new Umzug({
   migrations: {
-    glob: 'src/database/migrations/*.js',
+    glob: ['src/database/migrations/*.js', { cwd: serverRoot }],
     resolve: ({ name, path: filepath, context }) => {
       return {
         name,
@@ -31,7 +31,7 @@ export const migrator = new Umzug({
 
 export const seeder = new Umzug({
   migrations: {
-    glob: 'src/database/seeders/*.js',
+    glob: ['src/database/seeders/*.js', { cwd: serverRoot }],
     resolve: ({ name, path: filepath, context }) => {
       return {
         name,
