@@ -1,4 +1,5 @@
-import { User, Role } from '../models/index.js';
+import { Op } from 'sequelize';
+import { User, Role, Hospital } from '../models/index.js';
 import { comparePassword } from '../utils/password.js';
 import { generateAccessToken } from '../utils/jwt.js';
 
@@ -85,6 +86,81 @@ export const loginSuperAdmin = async (email, password) => {
 };
 
 /**
+ * Authenticate tenant Hospital Admin or Staff credentials and issue access token
+ * @param {string} email
+ * @param {string} password
+ */
+export const loginHospitalUser = async (email, password) => {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const user = await User.scope('withPassword').findOne({
+    where: {
+      email: normalizedEmail,
+      hospitalId: { [Op.ne]: null },
+    },
+    include: [
+      {
+        model: Role,
+        as: 'roles',
+        through: { attributes: [] },
+        attributes: ['id', 'name', 'scope'],
+      },
+    ],
+  });
+
+  if (!user) {
+    const error = new Error(INVALID_CREDENTIALS_MSG);
+    error.statusCode = 401;
+    throw error;
+  }
+
+  if (user.status !== 'ACTIVE') {
+    const error = new Error(INVALID_CREDENTIALS_MSG);
+    error.statusCode = 401;
+    throw error;
+  }
+
+  // Verify hospital status
+  const hospital = await Hospital.findByPk(user.hospitalId);
+  if (!hospital || hospital.status !== 'ACTIVE') {
+    const error = new Error('Hospital tenant is currently inactive or suspended. Please contact platform administration.');
+    error.statusCode = 403;
+    throw error;
+  }
+
+  const isPasswordValid = await comparePassword(password, user.passwordHash);
+  if (!isPasswordValid) {
+    const error = new Error(INVALID_CREDENTIALS_MSG);
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const primaryRole = user.roles?.[0] || { name: 'HOSPITAL_ADMIN', scope: 'HOSPITAL' };
+
+  const accessToken = generateAccessToken({
+    userId: user.id,
+    hospitalId: user.hospitalId,
+    role: primaryRole.name,
+    scope: primaryRole.scope,
+  });
+
+  const safeUser = {
+    id: user.id,
+    hospitalId: user.hospitalId,
+    hospitalName: hospital.name,
+    name: user.name,
+    email: user.email,
+    role: primaryRole.name,
+    scope: primaryRole.scope,
+  };
+
+  return {
+    user: safeUser,
+    accessToken,
+  };
+};
+
+/**
  * Fetch authenticated user profile
  * @param {string} userId
  * @returns {Promise<Object>}
@@ -97,6 +173,11 @@ export const getCurrentUser = async (userId) => {
         as: 'roles',
         through: { attributes: [] },
         attributes: ['id', 'name', 'scope'],
+      },
+      {
+        model: Hospital,
+        as: 'hospital',
+        attributes: ['id', 'name', 'slug', 'logoUrl', 'status'],
       },
     ],
   });
@@ -113,6 +194,9 @@ export const getCurrentUser = async (userId) => {
     id: user.id,
     name: user.name,
     email: user.email,
+    hospitalId: user.hospitalId || null,
+    hospitalName: user.hospital?.name || null,
+    hospitalLogoUrl: user.hospital?.logoUrl || null,
     role: primaryRole?.name || 'SUPER_ADMIN',
     scope: primaryRole?.scope || 'PLATFORM',
   };
@@ -120,5 +204,6 @@ export const getCurrentUser = async (userId) => {
 
 export default {
   loginSuperAdmin,
+  loginHospitalUser,
   getCurrentUser,
 };

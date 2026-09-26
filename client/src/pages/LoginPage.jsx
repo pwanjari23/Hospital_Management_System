@@ -5,8 +5,9 @@ import useAuth from '../hooks/useAuth';
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, user } = useAuth();
 
+  const [portal, setPortal] = useState('hospital'); // 'hospital' | 'superadmin'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -14,13 +15,22 @@ export default function LoginPage() {
   const [generalError, setGeneralError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // If already authenticated, redirect to /super-admin or previous location
+  // If already authenticated, redirect to appropriate portal
   useEffect(() => {
-    if (isAuthenticated) {
-      const from = location.state?.from?.pathname || '/super-admin';
-      navigate(from, { replace: true });
+    if (isAuthenticated && user) {
+      if (user.role === 'SUPER_ADMIN') {
+        const from = location.state?.from?.pathname?.startsWith('/super-admin')
+          ? location.state.from.pathname
+          : '/super-admin/dashboard';
+        navigate(from, { replace: true });
+      } else {
+        const from = location.state?.from?.pathname?.startsWith('/hospital-admin')
+          ? location.state.from.pathname
+          : '/hospital-admin/dashboard';
+        navigate(from, { replace: true });
+      }
     }
-  }, [isAuthenticated, navigate, location]);
+  }, [isAuthenticated, user, navigate, location]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -51,9 +61,12 @@ export default function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      await login(email.trim(), password);
-      // AuthContext triggers state update, useEffect redirects to /super-admin
-      const destination = location.state?.from?.pathname || '/super-admin';
+      const isHospital = portal === 'hospital';
+      const result = await login(email.trim(), password, isHospital);
+      const targetRole = result.user?.role;
+      const destination = location.state?.from?.pathname || (
+        targetRole === 'SUPER_ADMIN' ? '/super-admin/dashboard' : '/hospital-admin/dashboard'
+      );
       navigate(destination, { replace: true });
     } catch (err) {
       const apiErrorMessage =
@@ -188,13 +201,47 @@ export default function LoginPage() {
 
           {/* Elevated Card */}
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-elevated p-8 sm:p-10">
+            {/* Portal Switcher Tabs */}
+            <div className="flex p-1 mb-6 bg-slate-100/90 rounded-xl border border-slate-200">
+              <button
+                type="button"
+                onClick={() => {
+                  setPortal('hospital');
+                  setGeneralError('');
+                }}
+                className={`flex-1 py-2 text-xs font-semibold rounded-lg transition duration-150 ${
+                  portal === 'hospital'
+                    ? 'bg-white text-blue-700 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Hospital Staff & Admin
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setPortal('superadmin');
+                  setGeneralError('');
+                }}
+                className={`flex-1 py-2 text-xs font-semibold rounded-lg transition duration-150 ${
+                  portal === 'superadmin'
+                    ? 'bg-white text-blue-700 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Super Admin
+              </button>
+            </div>
+
             {/* Card Header */}
-            <div className="mb-8">
+            <div className="mb-6">
               <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
                 Welcome back
               </h2>
-              <p className="text-sm text-slate-500 mt-2">
-                Sign in to your platform administrator account
+              <p className="text-sm text-slate-500 mt-1.5">
+                {portal === 'hospital'
+                  ? 'Sign in to your hospital workspace (Admin, Reception, Doctor, Nurse)'
+                  : 'Sign in to platform super-administration'}
               </p>
             </div>
 
@@ -380,7 +427,9 @@ export default function LoginPage() {
             {/* Subtext info */}
             <div className="mt-8 pt-6 border-t border-slate-100 text-center">
               <p className="text-xs text-slate-400">
-                Protected system for authorized platform administrators only.
+                {portal === 'hospital'
+                  ? 'Secure access for authorized hospital staff & medical administrators.'
+                  : 'Protected system for authorized platform administrators only.'}
               </p>
             </div>
           </div>

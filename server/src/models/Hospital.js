@@ -25,22 +25,56 @@ Hospital.init(
       allowNull: false,
     },
     name: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: false,
       validate: {
         notEmpty: { msg: 'Hospital name cannot be empty' },
+        len: { args: [2, 255], msg: 'Hospital name must be between 2 and 255 characters' },
       },
     },
     slug: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: false,
       unique: true,
       validate: {
         notEmpty: { msg: 'Hospital slug cannot be empty' },
       },
     },
+    email: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      validate: {
+        isEmail: { msg: 'Must be a valid email address' },
+      },
+    },
+    phone: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+    address: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    city: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
+    state: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
+    country: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+      defaultValue: 'India',
+    },
+    postalCode: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+      field: 'postal_code',
+    },
     logoUrl: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(500),
       allowNull: true,
       field: 'logo_url',
     },
@@ -70,13 +104,34 @@ Hospital.init(
       {
         fields: ['status'],
       },
+      {
+        fields: ['name'],
+      },
+      {
+        fields: ['created_at'],
+      },
     ],
     hooks: {
       beforeValidate: (hospital) => {
+        if (hospital.name && typeof hospital.name === 'string') {
+          hospital.name = hospital.name.trim();
+        }
         if (hospital.slug) {
           hospital.slug = Hospital.slugify(hospital.slug);
         } else if (hospital.name) {
           hospital.slug = Hospital.slugify(hospital.name);
+        }
+        if (hospital.email && typeof hospital.email === 'string') {
+          hospital.email = hospital.email.trim().toLowerCase();
+        }
+        if (hospital.city && typeof hospital.city === 'string') {
+          hospital.city = hospital.city.trim();
+        }
+        if (hospital.state && typeof hospital.state === 'string') {
+          hospital.state = hospital.state.trim();
+        }
+        if (hospital.phone && typeof hospital.phone === 'string') {
+          hospital.phone = hospital.phone.trim();
         }
       },
     },

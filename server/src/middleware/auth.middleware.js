@@ -126,8 +126,24 @@ export const requireRole = (...allowedRoles) => {
   };
 };
 
+/**
+ * Ensures user belongs to a hospital tenant (hospitalId !== null)
+ */
+export const requireHospitalTenant = (req, res, next) => {
+  if (!req.user) {
+    return errorResponse(res, 'Authentication required', 401);
+  }
+
+  if (!req.user.hospitalId) {
+    return errorResponse(res, 'Access denied: Hospital context required', 403);
+  }
+
+  return next();
+};
+
 export default {
   authenticate,
   requireSuperAdmin,
   requireRole,
+  requireHospitalTenant,
 };

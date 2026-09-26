@@ -173,14 +173,15 @@ export const runVerification = async () => {
     // -------------------------------------------------------------
     console.log('\n--- 4. Testing User Model & Tenant Email Uniqueness ---');
 
-    // User requires hospitalId
-    await assertThrows(async () => {
-      await User.create({
-        name: 'Orphan User',
-        email: 'orphan@hospital.com',
-        passwordHash: 'dummy_hash_placeholder',
-      });
-    }, 'User creation without hospitalId is rejected');
+    // Platform user supports hospitalId = null (from Module 1)
+    const platformUser = await User.create({
+      name: 'Platform User',
+      email: 'platform.test@hospital.com',
+      passwordHash: 'dummy_hash_placeholder',
+      hospitalId: null,
+    });
+    assert(platformUser.hospitalId === null, 'Platform user supports hospitalId = null');
+    await platformUser.destroy();
 
     // User created under Hospital A
     const userA = await User.create({

@@ -16,6 +16,20 @@ export const login = async (req, res, next) => {
 };
 
 /**
+ * Handle Hospital Admin & Staff tenant login
+ * POST /api/auth/hospital-login
+ */
+export const hospitalLogin = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const result = await authService.loginHospitalUser(email, password);
+    return successResponse(res, 'Hospital login successful', result, 200);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+/**
  * Retrieve authenticated user profile
  * GET /api/auth/me
  */
@@ -44,6 +58,7 @@ export const logout = async (req, res, next) => {
 
 export default {
   login,
+  hospitalLogin,
   getMe,
   logout,
 };

@@ -14,6 +14,13 @@ const router = Router();
 router.post('/login', loginRateLimiter, validateLogin, authController.login);
 
 /**
+ * @route   POST /api/auth/hospital-login
+ * @desc    Authenticate Hospital Admin & Staff tenant user & obtain access token
+ * @access  Public (Rate limited)
+ */
+router.post('/hospital-login', loginRateLimiter, validateLogin, authController.hospitalLogin);
+
+/**
  * @route   GET /api/auth/me
  * @desc    Get currently authenticated user profile
  * @access  Protected (Requires valid JWT)

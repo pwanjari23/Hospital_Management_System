@@ -75,8 +75,9 @@ export function AuthProvider({ children }) {
   }, []);
 
   // Login action: authenticates credentials and sets state
-  const login = useCallback(async (email, password) => {
-    const response = await api.post('/auth/login', { email, password });
+  const login = useCallback(async (email, password, isHospital = false) => {
+    const endpoint = isHospital ? '/auth/hospital-login' : '/auth/login';
+    const response = await api.post(endpoint, { email, password });
     if (response.data?.success && response.data?.data) {
       const { user: authUser, accessToken } = response.data.data;
       setStoredToken(accessToken);

@@ -3,9 +3,14 @@ import useAuth from '../hooks/useAuth';
 
 /**
  * ProtectedRoute component for route guarding
- * Redirects unauthenticated users to /login
+ * Supports checking single requiredRole, allowedRoles array, and requiredScope
  */
-export default function ProtectedRoute({ children, requiredRole = null }) {
+export default function ProtectedRoute({
+  children,
+  requiredRole = null,
+  allowedRoles = null,
+  requiredScope = null,
+}) {
   const { isAuthenticated, loading, user } = useAuth();
   const location = useLocation();
 
@@ -24,8 +29,9 @@ export default function ProtectedRoute({ children, requiredRole = null }) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
-  // If a specific role is required (e.g. SUPER_ADMIN)
-  if (requiredRole && user?.role !== requiredRole) {
+  // Check role authorization
+  const rolesToCheck = allowedRoles || (requiredRole ? [requiredRole] : null);
+  if (rolesToCheck && !rolesToCheck.includes(user?.role)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] p-6">
         <div className="max-w-md w-full bg-white rounded-2xl p-8 border border-red-100 shadow-soft text-center">
@@ -40,6 +46,11 @@ export default function ProtectedRoute({ children, requiredRole = null }) {
         </div>
       </div>
     );
+  }
+
+  // Check scope if specified
+  if (requiredScope && user?.scope !== requiredScope) {
+    return <Navigate to="/login" replace />;
   }
 
   return children;

@@ -6,6 +6,8 @@ import Permission from './Permission.js';
 import RolePermission from './RolePermission.js';
 import UserRole from './UserRole.js';
 import HospitalSetting from './HospitalSetting.js';
+import Patient from './Patient.js';
+import HospitalSequence from './HospitalSequence.js';
 
 // ==========================================
 // Centralized Model Associations
@@ -71,9 +73,40 @@ Permission.belongsToMany(Role, {
 Role.hasMany(RolePermission, { foreignKey: 'roleId', as: 'rolePermissions' });
 RolePermission.belongsTo(Role, { foreignKey: 'roleId', as: 'role' });
 Permission.hasMany(RolePermission, { foreignKey: 'permissionId', as: 'rolePermissions' });
-RolePermission.belongsTo(Permission, { foreignKey: 'permissionId', as: 'permission' });
+// 5. Hospital <-> Patient (1:N)
+Hospital.hasMany(Patient, {
+  foreignKey: 'hospitalId',
+  as: 'patients',
+  onDelete: 'RESTRICT',
+});
+Patient.belongsTo(Hospital, {
+  foreignKey: 'hospitalId',
+  as: 'hospital',
+});
 
-export { sequelize, Hospital, User, Role, Permission, RolePermission, UserRole, HospitalSetting };
+// 6. Hospital <-> HospitalSequence (1:N)
+Hospital.hasMany(HospitalSequence, {
+  foreignKey: 'hospitalId',
+  as: 'sequences',
+  onDelete: 'CASCADE',
+});
+HospitalSequence.belongsTo(Hospital, {
+  foreignKey: 'hospitalId',
+  as: 'hospital',
+});
+
+export {
+  sequelize,
+  Hospital,
+  User,
+  Role,
+  Permission,
+  RolePermission,
+  UserRole,
+  HospitalSetting,
+  Patient,
+  HospitalSequence,
+};
 
 export default {
   sequelize,
@@ -84,4 +117,6 @@ export default {
   RolePermission,
   UserRole,
   HospitalSetting,
+  Patient,
+  HospitalSequence,
 };
