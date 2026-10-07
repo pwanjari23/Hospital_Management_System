@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import { Patient, User, Role, Hospital, HospitalSetting } from '../models/index.js';
+import withTransaction from '../utils/transaction.js';
 
 /**
  * Aggregates live patient and staff metrics for a specific hospital tenant
@@ -65,7 +66,25 @@ export const getHospitalDashboardStats = async (hospitalId) => {
 
   // 4. Hospital tenant details & branding
   const hospital = await Hospital.findByPk(hospitalId, {
-    attributes: ['id', 'name', 'slug', 'email', 'phone', 'logoUrl', 'city', 'status'],
+    attributes: [
+      'id',
+      'name',
+      'slug',
+      'email',
+      'phone',
+      'alternatePhone',
+      'website',
+      'address',
+      'city',
+      'state',
+      'country',
+      'postalCode',
+      'workingHours',
+      'timezone',
+      'currency',
+      'logoUrl',
+      'status',
+    ],
     include: [
       {
         model: HospitalSetting,
@@ -103,6 +122,120 @@ export const getHospitalDashboardStats = async (hospitalId) => {
   };
 };
 
+/**
+ * Get comprehensive settings dictionary and hospital profile for the tenant
+ */
+export const getHospitalSettings = async (hospitalId, options = {}) => {
+  const hospital = await Hospital.findByPk(hospitalId, {
+    attributes: [
+      'id',
+      'name',
+      'slug',
+      'email',
+      'phone',
+      'alternatePhone',
+      'website',
+      'address',
+      'city',
+      'state',
+      'country',
+      'postalCode',
+      'workingHours',
+      'timezone',
+      'currency',
+      'logoUrl',
+      'status',
+    ],
+    ...options,
+  });
+
+  if (!hospital) {
+    const error = new Error('Hospital tenant not found.');
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const rawSettings = await HospitalSetting.findAll({
+    where: { hospitalId },
+    attributes: ['key', 'value'],
+    ...options,
+  });
+
+  const settingsMap = {};
+  for (const s of rawSettings) {
+    settingsMap[s.key] = s.value;
+  }
+
+  return {
+    hospital,
+    settings: settingsMap,
+  };
+};
+
+/**
+ * Update Hospital Profile fields
+ */
+export const updateHospitalProfile = async (hospitalId, data) => {
+  const hospital = await Hospital.findByPk(hospitalId);
+  if (!hospital) {
+    const error = new Error('Hospital tenant not found.');
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const allowedFields = [
+    'name',
+    'phone',
+    'alternatePhone',
+    'email',
+    'website',
+    'address',
+    'city',
+    'state',
+    'country',
+    'postalCode',
+    'workingHours',
+    'timezone',
+    'currency',
+  ];
+
+  for (const field of allowedFields) {
+    if (data[field] !== undefined) {
+      hospital[field] = typeof data[field] === 'string' ? data[field].trim() || null : data[field];
+    }
+  }
+
+  await hospital.save();
+  return getHospitalSettings(hospitalId);
+};
+
+/**
+ * Bulk upsert settings in HospitalSetting table for tenant
+ */
+export const updateHospitalSettingsMap = async (hospitalId, settingsMap) => {
+  return withTransaction(async (t) => {
+    for (const [key, value] of Object.entries(settingsMap)) {
+      if (!key) continue;
+      const strVal = value !== null && value !== undefined ? String(value) : '';
+      const existing = await HospitalSetting.findOne({
+        where: { hospitalId, key },
+        transaction: t,
+      });
+
+      if (existing) {
+        await existing.update({ value: strVal }, { transaction: t });
+      } else {
+        await HospitalSetting.create({ hospitalId, key, value: strVal }, { transaction: t });
+      }
+    }
+
+    return getHospitalSettings(hospitalId, { transaction: t });
+  });
+};
+
 export default {
   getHospitalDashboardStats,
+  getHospitalSettings,
+  updateHospitalProfile,
+  updateHospitalSettingsMap,
 };

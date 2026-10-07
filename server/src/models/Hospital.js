@@ -78,6 +78,30 @@ Hospital.init(
       allowNull: true,
       field: 'logo_url',
     },
+    alternatePhone: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+      field: 'alternate_phone',
+    },
+    website: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    workingHours: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      field: 'working_hours',
+    },
+    timezone: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+      defaultValue: 'Asia/Kolkata',
+    },
+    currency: {
+      type: DataTypes.STRING(10),
+      allowNull: true,
+      defaultValue: 'INR',
+    },
     status: {
       type: DataTypes.ENUM('ACTIVE', 'INACTIVE', 'SUSPENDED'),
       allowNull: false,

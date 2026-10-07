@@ -4,6 +4,7 @@ import patientService from '../../services/patientService';
 import ConfirmationDialog from '../../components/common/ConfirmationDialog';
 import useAuth from '../../hooks/useAuth';
 import { calculateAge } from '../../utils/age';
+import pharmacyService from '../../services/pharmacyService';
 
 const BLOOD_GROUP_MAP = {
   A_POSITIVE: 'A+',
@@ -29,6 +30,10 @@ export default function PatientDetailsPage() {
   // Status toggle confirmation modal
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [statusLoading, setStatusLoading] = useState(false);
+
+  const [medicationHistory, setMedicationHistory] = useState([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const canViewPharmacyHistory = ['HOSPITAL_ADMIN', 'DOCTOR', 'NURSE', 'PHARMACIST'].includes(user?.role);
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -59,6 +64,25 @@ export default function PatientDetailsPage() {
   useEffect(() => {
     fetchPatient();
   }, [fetchPatient]);
+
+  useEffect(() => {
+    if (canViewPharmacyHistory && id) {
+      const fetchHistory = async () => {
+        try {
+          setLoadingHistory(true);
+          const res = await pharmacyService.getPatientMedicationHistory(id);
+          if (res.data) {
+            setMedicationHistory(res.data);
+          }
+        } catch (err) {
+          console.error('Failed to load medication history:', err);
+        } finally {
+          setLoadingHistory(false);
+        }
+      };
+      fetchHistory();
+    }
+  }, [canViewPharmacyHistory, id]);
 
   const canEdit = ['HOSPITAL_ADMIN', 'RECEPTIONIST', 'DOCTOR', 'NURSE'].includes(user?.role);
   const canChangeStatus = user?.role === 'HOSPITAL_ADMIN';
@@ -354,6 +378,81 @@ export default function PatientDetailsPage() {
           </div>
         </div>
       </div>
+
+      {/* Card 5: Medication & Pharmacy Dispensing History */}
+      {canViewPharmacyHistory && (
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-soft p-6 sm:p-7 space-y-4">
+          <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+            <div className="flex items-center gap-2.5 text-slate-900 font-bold text-base">
+              <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center border border-teal-100">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+              </div>
+              <span>Medication & Pharmacy Dispensing History</span>
+            </div>
+            <Link
+              to="/hospital-admin/pharmacy"
+              className="text-xs font-semibold text-teal-600 hover:text-teal-700 transition"
+            >
+              Go to Pharmacy Queue →
+            </Link>
+          </div>
+
+          {loadingHistory ? (
+            <div className="p-6 text-center text-xs text-slate-400">Loading medication history...</div>
+          ) : medicationHistory.length === 0 ? (
+            <div className="p-6 text-center text-xs text-slate-400 italic">No prescriptions recorded for this patient.</div>
+          ) : (
+            <div className="space-y-3">
+              {medicationHistory.map((rx) => (
+                <div key={rx.id} className="p-3.5 rounded-xl bg-slate-50 border border-slate-100 space-y-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
+                    <div>
+                      <span className="font-bold text-slate-800">{rx.prescriptionNumber}</span>
+                      <span className="text-slate-400 ml-2">
+                        {new Date(rx.prescribedAt).toLocaleDateString()} • Dr. {rx.doctor?.name || 'Assigned Doctor'}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-white border border-slate-200 text-slate-700">
+                        {rx.status}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Items */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1 text-xs">
+                    {rx.items?.map((item) => {
+                      const totalDispensed = (item.dispensingItems || []).reduce(
+                        (sum, di) => sum + (Number(di.dispensedQuantity) || 0),
+                        0
+                      );
+                      return (
+                        <div key={item.id} className="p-2 bg-white rounded-lg border border-slate-100 flex items-center justify-between">
+                          <div>
+                            <span className="font-semibold text-slate-800">{item.medicineName}</span>
+                            <div className="text-[10px] text-slate-400">
+                              {item.dosage} • {item.frequency}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-[10px] text-slate-400 block">Dispensed / Prescribed</span>
+                            <span className="font-bold text-slate-700 text-xs">
+                              {totalDispensed} / {item.quantity}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
 
       {/* Metadata Bar */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-soft p-4 px-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">

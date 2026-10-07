@@ -65,6 +65,44 @@ User.init(
         },
       },
     },
+    departmentId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      field: 'department_id',
+      references: {
+        model: 'departments',
+        key: 'id',
+      },
+      onDelete: 'SET NULL',
+    },
+    phone: {
+      type: DataTypes.STRING(30),
+      allowNull: true,
+    },
+    qualification: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    specialization: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    licenseNumber: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+      field: 'license_number',
+    },
+    experienceYears: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      field: 'experience_years',
+    },
+    consultationFee: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+      defaultValue: 0.0,
+      field: 'consultation_fee',
+    },
   },
   {
     sequelize,
