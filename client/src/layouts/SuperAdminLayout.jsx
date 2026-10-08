@@ -94,7 +94,7 @@ export default function SuperAdminLayout() {
                 {user?.name || 'Administrator'}
               </span>
               <span className="text-xs text-slate-400">
-                {user?.email || 'admin@example.com'}
+                {user?.email || ''}
               </span>
             </div>
 
