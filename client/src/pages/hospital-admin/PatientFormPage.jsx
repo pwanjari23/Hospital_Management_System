@@ -214,18 +214,18 @@ export default function PatientFormPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="space-y-6">
       {/* Top Header & Breadcrumbs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-1.5">
-            <Link to="/hospital-admin/patients" className="hover:text-blue-600 transition">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-1">
+            <Link to="/hospital-admin/patients" className="hover:text-teal-600 transition">
               Patients
             </Link>
             <span>/</span>
             <span className="text-slate-800">{isEditMode ? 'Edit Patient' : 'Registration'}</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
             {isEditMode ? 'Edit Patient Profile' : 'Register New Patient'}
           </h1>
           <p className="text-sm text-slate-500 mt-1">
@@ -237,9 +237,9 @@ export default function PatientFormPage() {
 
         <Link
           to="/hospital-admin/patients"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs font-semibold transition shadow-2xs self-start sm:self-auto"
+          className="px-3 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-medium shadow-xs transition-colors self-start sm:self-auto"
         >
-          <span>&larr; Back to Directory</span>
+          &larr; Back to Directory
         </Link>
       </div>
 
@@ -256,7 +256,7 @@ export default function PatientFormPage() {
       {/* Form */}
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
         {/* Section 1: Personal Demographics */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-soft p-6 sm:p-8 space-y-5">
+        <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-6 space-y-5">
           <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <span className="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 font-bold text-xs flex items-center justify-center border border-blue-100">
@@ -394,7 +394,7 @@ export default function PatientFormPage() {
         </div>
 
         {/* Section 2: Contact & Address */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-soft p-6 sm:p-8 space-y-5">
+        <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-6 space-y-5">
           <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <span className="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 font-bold text-xs flex items-center justify-center border border-blue-100">
@@ -532,7 +532,7 @@ export default function PatientFormPage() {
         </div>
 
         {/* Section 3: Emergency Contact */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-soft p-6 sm:p-8 space-y-5">
+        <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-6 space-y-5">
           <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <span className="w-6 h-6 rounded-lg bg-rose-50 text-rose-600 font-bold text-xs flex items-center justify-center border border-rose-100">
@@ -594,7 +594,7 @@ export default function PatientFormPage() {
         </div>
 
         {/* Section 4: Basic Medical Notes & Allergies */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-soft p-6 sm:p-8 space-y-5">
+        <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-6 space-y-5">
           <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <span className="w-6 h-6 rounded-lg bg-amber-50 text-amber-600 font-bold text-xs flex items-center justify-center border border-amber-100">
@@ -648,17 +648,17 @@ export default function PatientFormPage() {
         </div>
 
         {/* Submit Actions */}
-        <div className="flex items-center justify-end gap-3 pt-2">
+        <div className="flex items-center justify-end gap-2 pt-2">
           <Link
             to="/hospital-admin/patients"
-            className="px-5 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-700 text-sm font-semibold hover:bg-slate-50 transition shadow-2xs"
+            className="px-3 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-medium shadow-xs transition-colors"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={submitting}
-            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-xs transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:opacity-50 flex items-center gap-2"
+            className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-medium shadow-xs transition-colors disabled:opacity-50 flex items-center gap-2"
           >
             {submitting ? (
               <>

@@ -63,9 +63,9 @@ export default function IpdDashboardPage() {
   }, []);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight">IPD & Bed Management</h1>
           <p className="text-sm text-slate-500 mt-1">
@@ -75,7 +75,7 @@ export default function IpdDashboardPage() {
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => navigate('/hospital-admin/ipd/admissions')}
-            className="px-3.5 py-2 text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 rounded-lg shadow-xs transition-colors flex items-center gap-1.5"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-teal-600 hover:bg-teal-700 rounded-lg shadow-xs transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
@@ -84,22 +84,22 @@ export default function IpdDashboardPage() {
           </button>
           <button
             onClick={() => navigate('/hospital-admin/ipd/beds')}
-            className="px-3.5 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg shadow-xs transition-colors"
+            className="px-3 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg shadow-xs transition-colors"
           >
             Manage Beds
           </button>
           <button
             onClick={() => navigate('/hospital-admin/ipd/wards')}
-            className="px-3.5 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg shadow-xs transition-colors"
+            className="px-3 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg shadow-xs transition-colors"
           >
             Manage Wards
           </button>
           <button
             onClick={fetchData}
-            className="p-2 text-slate-500 hover:text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg shadow-xs transition-colors"
+            className="p-2 text-slate-500 hover:text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg shadow-xs transition-colors"
             title="Refresh"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -121,30 +121,32 @@ export default function IpdDashboardPage() {
       )}
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-200">
-        <button
-          onClick={() => setActiveTab('overview')}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-            activeTab === 'overview'
-              ? 'border-teal-600 text-teal-700'
-              : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
-          }`}
-        >
-          Overview & Census
-        </button>
-        <button
-          onClick={() => setActiveTab('bed-board')}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
-            activeTab === 'bed-board'
-              ? 'border-teal-600 text-teal-700'
-              : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
-          }`}
-        >
-          Live Bed Board
-          <span className="px-1.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
-            {metrics?.totalBeds || 0}
-          </span>
-        </button>
+      <div className="border-b border-slate-200">
+        <nav className="flex space-x-6 overflow-x-auto pb-px">
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+              activeTab === 'overview'
+                ? 'border-teal-600 text-teal-600'
+                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+            }`}
+          >
+            Overview & Census
+          </button>
+          <button
+            onClick={() => setActiveTab('bed-board')}
+            className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 ${
+              activeTab === 'bed-board'
+                ? 'border-teal-600 text-teal-600'
+                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+            }`}
+          >
+            Live Bed Board
+            <span className="px-1.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
+              {metrics?.totalBeds || 0}
+            </span>
+          </button>
+        </nav>
       </div>
 
       {loading ? (

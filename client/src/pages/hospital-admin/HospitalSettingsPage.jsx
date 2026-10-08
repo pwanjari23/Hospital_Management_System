@@ -208,9 +208,9 @@ export default function HospitalSettingsPage() {
       )}
 
       {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
             Hospital Settings & Configuration
           </h1>
           <p className="text-sm text-slate-500 mt-1">
@@ -223,9 +223,9 @@ export default function HospitalSettingsPage() {
           onClick={loadSettings}
           disabled={loading || saving}
           aria-label="Refresh settings"
-          className="p-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition shadow-2xs self-start sm:self-auto flex items-center gap-1.5 text-xs font-semibold"
+          className="px-3 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-medium shadow-xs transition-colors self-start sm:self-auto flex items-center gap-1.5"
         >
-          <svg className="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
           <span>Reload</span>
@@ -251,30 +251,32 @@ export default function HospitalSettingsPage() {
         </div>
       )}
 
-      {/* Tabs Bar */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs p-1.5 flex flex-wrap gap-1">
-        {SETTINGS_TABS.map((tab) => {
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition ${
-                isActive
-                  ? 'bg-blue-600 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
-            >
-              <span>{tab.icon}</span>
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
+      {/* Navigation Tabs */}
+      <div className="border-b border-slate-200">
+        <nav className="flex space-x-6 overflow-x-auto pb-px">
+          {SETTINGS_TABS.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 pb-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
+                  isActive
+                    ? 'border-teal-600 text-teal-600'
+                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                }`}
+              >
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </nav>
       </div>
 
       {/* Settings Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs p-6">
+      <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-6">
         {loading ? (
           <div className="py-12 text-center space-y-3">
             <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
@@ -446,7 +448,7 @@ export default function HospitalSettingsPage() {
                     <button
                       type="submit"
                       disabled={saving}
-                      className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-xs disabled:opacity-50 transition"
+                      className="px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-medium shadow-xs disabled:opacity-50 transition-colors"
                     >
                       {saving ? 'Saving...' : 'Save Profile Changes'}
                     </button>
@@ -521,7 +523,7 @@ export default function HospitalSettingsPage() {
                     <button
                       type="submit"
                       disabled={saving}
-                      className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-xs disabled:opacity-50 transition"
+                      className="px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-medium shadow-xs disabled:opacity-50 transition-colors"
                     >
                       {saving ? 'Saving...' : 'Save Numbering Rules'}
                     </button>
@@ -641,7 +643,7 @@ export default function HospitalSettingsPage() {
                     <button
                       type="submit"
                       disabled={saving}
-                      className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-xs disabled:opacity-50 transition"
+                      className="px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-medium shadow-xs disabled:opacity-50 transition-colors"
                     >
                       {saving ? 'Saving...' : 'Save Billing Settings'}
                     </button>
@@ -793,7 +795,7 @@ export default function HospitalSettingsPage() {
                     <button
                       type="submit"
                       disabled={saving}
-                      className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-xs disabled:opacity-50 transition"
+                      className="px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-medium shadow-xs disabled:opacity-50 transition-colors"
                     >
                       {saving ? 'Saving...' : 'Save Notification Settings'}
                     </button>

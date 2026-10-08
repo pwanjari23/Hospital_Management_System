@@ -88,14 +88,14 @@ function PriorityBadge({ priority }) {
 // ─────────────────────────────────────────────────────────────────────────────
 function MetricCard({ label, value, sub, colorClass, icon }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-4 flex items-start gap-3">
-      <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${colorClass}`}>
-        {icon}
+    <div className="bg-white rounded-xl border border-slate-200/80 p-4 flex flex-col justify-between shadow-xs">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">{label}</span>
+        {icon && <div className={`p-2 rounded-lg ${colorClass}`}>{icon}</div>}
       </div>
-      <div className="min-w-0">
-        <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider truncate">{label}</div>
-        <div className="text-2xl font-bold text-slate-800 mt-0.5">{value ?? 0}</div>
-        {sub && <div className="text-[11px] text-slate-400 mt-0.5">{sub}</div>}
+      <div className="mt-2">
+        <span className="text-2xl font-bold text-slate-800 tracking-tight">{value ?? 0}</span>
+        {sub && <p className="text-xs text-slate-400 mt-0.5">{sub}</p>}
       </div>
     </div>
   );
@@ -173,17 +173,18 @@ export default function LaboratoryDashboardPage() {
             Process investigation orders, collect samples, enter and verify results.
           </p>
         </div>
-        <button
-          onClick={loadData}
-          disabled={loading}
-          title="Refresh"
-          className="inline-flex items-center gap-2 px-3 py-2 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition shadow-xs"
-        >
-          <svg className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          Refresh
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={loadData}
+            disabled={loading}
+            title="Refresh"
+            className="p-2 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 shadow-xs transition-colors"
+          >
+            <svg className={`w-4 h-4 ${loading ? 'animate-spin text-teal-600' : 'text-slate-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Error */}
@@ -313,7 +314,7 @@ export default function LaboratoryDashboardPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm text-slate-700">
-              <thead className="bg-slate-50/80 text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-100">
+              <thead className="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-600 uppercase tracking-wider">
                 <tr>
                   <th className="py-3 px-4">Order #</th>
                   <th className="py-3 px-4">Patient</th>

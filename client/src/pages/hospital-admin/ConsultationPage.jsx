@@ -605,7 +605,7 @@ export default function ConsultationPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/hospital-admin/encounters')}
-            className="p-1.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-2xs transition"
+            className="p-1.5 rounded-lg border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 shadow-xs transition-colors"
             title="Back to encounters"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -614,12 +614,12 @@ export default function ConsultationPage() {
           </button>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold tracking-tight text-slate-900">Doctor Consultation</h1>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider bg-blue-50 text-blue-700 border-blue-200">
+              <h1 className="text-2xl font-bold tracking-tight text-slate-800">Doctor Consultation</h1>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider bg-teal-50 text-teal-700 border-teal-200">
                 {encounter.status.replace('_', ' ')}
               </span>
             </div>
-            <p className="text-xs text-slate-500 font-mono mt-0.5">
+            <p className="text-sm text-slate-500 font-mono mt-1">
               {encounter.encounterNumber} &bull; {encounter.encounterType} Consultation
             </p>
           </div>
@@ -627,20 +627,20 @@ export default function ConsultationPage() {
 
         {/* Action Buttons (Save Draft / Complete) */}
         {!isCompleted && isDoctor && (
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             <button
               onClick={handleSaveDraft}
               disabled={saving}
-              className="px-4 py-2 text-xs font-semibold rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-2xs transition disabled:opacity-50"
+              className="px-3 py-2 text-xs font-medium rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 shadow-xs transition-colors disabled:opacity-50"
             >
               {saving ? 'Saving...' : 'Save Draft'}
             </button>
             <button
               onClick={() => setConfirmCompleteDialog(true)}
               disabled={completing}
-              className="px-4 py-2 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition disabled:opacity-50 flex items-center gap-1.5"
+              className="px-3 py-2 text-xs font-medium rounded-lg bg-teal-600 hover:bg-teal-700 text-white shadow-xs transition-colors disabled:opacity-50 flex items-center gap-1.5"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
               </svg>
               <span>Complete Consultation</span>
@@ -650,7 +650,7 @@ export default function ConsultationPage() {
       </div>
 
       {/* Patient Header & Clinical Snapshot Banner */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs space-y-4">
+      <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-xs space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 divide-y md:divide-y-0 md:divide-x divide-slate-100">
           {/* Patient Bio */}
           <div className="pr-4 space-y-1">

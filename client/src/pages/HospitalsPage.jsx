@@ -199,9 +199,9 @@ export default function HospitalsPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
             Hospital Management
           </h1>
           <p className="text-sm text-slate-500 mt-1">
@@ -209,17 +209,17 @@ export default function HospitalsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => loadHospitals()}
             disabled={loading}
-            className="p-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300 transition shadow-2xs disabled:opacity-50 flex items-center justify-center"
+            className="px-3 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-medium shadow-xs transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
             title="Refresh list"
             aria-label="Refresh list"
           >
             <svg
-              className={`w-4 h-4 ${loading ? 'animate-spin text-blue-600' : 'text-slate-500'}`}
+              className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-teal-600' : 'text-slate-500'}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -231,14 +231,15 @@ export default function HospitalsPage() {
                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
               />
             </svg>
+            <span>Refresh</span>
           </button>
 
           <button
             type="button"
             onClick={handleOpenAdd}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition"
+            className="px-3 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-medium shadow-xs transition-colors flex items-center gap-1.5"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
             </svg>
             <span>Register Hospital</span>
@@ -280,7 +281,7 @@ export default function HospitalsPage() {
       )}
 
       {/* Search & Filter Toolbar */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-soft flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white rounded-xl border border-slate-200/80 p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Search Input */}
         <div className="relative flex-1 max-w-md">
           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -350,7 +351,7 @@ export default function HospitalsPage() {
       </div>
 
       {/* Main Table (Desktop) & Cards (Mobile) */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden">
         {loading ? (
           <div className="p-12 text-center space-y-3">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-200 border-t-blue-600" />
@@ -393,7 +394,7 @@ export default function HospitalsPage() {
             {/* Desktop Table */}
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-600">
-                <thead className="bg-slate-50/80 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                <thead className="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-600 uppercase tracking-wider">
                   <tr>
                     <th className="py-3 px-6">Hospital & Slug</th>
                     <th className="py-3 px-4">Location</th>

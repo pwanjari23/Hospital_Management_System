@@ -188,22 +188,29 @@ export default function EecpCourseDetailsPage() {
       )}
 
       {/* Navigation & Header */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={() => navigate('/hospital-admin/eecp')}
-          className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-800 transition"
-        >
-          <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Back to EECP Dashboard
-        </button>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <button
+            onClick={() => navigate('/hospital-admin/eecp')}
+            className="text-xs text-teal-600 hover:text-teal-700 font-medium"
+          >
+            ← Back to EECP Dashboard
+          </button>
+          <div className="flex items-center gap-3 mt-1">
+            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
+              EECP Course: <span className="font-mono text-teal-700">{course.courseNumber}</span>
+            </h1>
+            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${courseCfg.color}`}>
+              {courseCfg.label}
+            </span>
+          </div>
+        </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           {course.status === 'ACTIVE' && (
             <button
               onClick={() => setStatusDialog({ isOpen: true, newStatus: 'PAUSED', notes: '', submitting: false })}
-              className="px-3 py-1.5 text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition"
+              className="px-3 py-2 bg-white border border-slate-300 text-amber-700 hover:bg-amber-50 rounded-lg text-xs font-medium shadow-xs transition-colors"
             >
               Pause Course
             </button>
@@ -211,7 +218,7 @@ export default function EecpCourseDetailsPage() {
           {course.status === 'PAUSED' && (
             <button
               onClick={() => setStatusDialog({ isOpen: true, newStatus: 'ACTIVE', notes: '', submitting: false })}
-              className="px-3 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition"
+              className="px-3 py-2 bg-white border border-slate-300 text-emerald-700 hover:bg-emerald-50 rounded-lg text-xs font-medium shadow-xs transition-colors"
             >
               Resume Course
             </button>
@@ -219,16 +226,26 @@ export default function EecpCourseDetailsPage() {
           {course.status !== 'COMPLETED' && course.status !== 'CANCELLED' && (
             <button
               onClick={() => setStatusDialog({ isOpen: true, newStatus: 'CANCELLED', notes: '', submitting: false })}
-              className="px-3 py-1.5 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition"
+              className="px-3 py-2 bg-white border border-red-200 text-red-600 hover:bg-red-50 rounded-lg text-xs font-medium shadow-xs transition-colors"
             >
               Cancel Course
             </button>
           )}
+          <button
+            onClick={openScheduleModal}
+            disabled={course.status === 'COMPLETED' || course.status === 'CANCELLED'}
+            className="px-3 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-medium shadow-xs transition-colors disabled:opacity-50 flex items-center gap-1.5"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Schedule Next Session</span>
+          </button>
         </div>
       </div>
 
       {/* Patient Header Card */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 font-bold text-lg">
             {patient.firstName?.[0] || 'P'}
@@ -268,7 +285,7 @@ export default function EecpCourseDetailsPage() {
       {/* Course Info & Progress Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Course Summary */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-xs space-y-3">
           <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Course Details</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between py-1 border-b border-slate-100">
@@ -293,7 +310,7 @@ export default function EecpCourseDetailsPage() {
         </div>
 
         {/* Progress Card */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
           <div>
             <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Therapy Progress</h3>
             <div className="flex items-baseline justify-between mb-2">
@@ -324,7 +341,7 @@ export default function EecpCourseDetailsPage() {
         </div>
 
         {/* Treatment Plan & Clinical Notes */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
           <div>
             <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Protocol & Clinical Notes</h3>
             <p className="text-sm text-slate-700 whitespace-pre-wrap line-clamp-4">
@@ -348,7 +365,7 @@ export default function EecpCourseDetailsPage() {
       </div>
 
       {/* Sessions Timeline & Queue */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden">
         <div className="p-4 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <h3 className="text-base font-bold text-slate-900">Treatment Sessions History & Schedule</h3>
@@ -368,7 +385,7 @@ export default function EecpCourseDetailsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-sm">
             <thead>
-              <tr className="bg-slate-50/80 border-b border-slate-200/80 text-xs font-semibold text-slate-600 uppercase tracking-wider">
+              <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-600 uppercase tracking-wider">
                 <th className="py-3 px-4">Session #</th>
                 <th className="py-3 px-4">Scheduled Date</th>
                 <th className="py-3 px-4">Started / Completed</th>

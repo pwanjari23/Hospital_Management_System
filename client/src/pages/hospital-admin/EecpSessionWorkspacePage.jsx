@@ -275,23 +275,30 @@ export default function EecpSessionWorkspacePage() {
       )}
 
       {/* Top Breadcrumb & Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <button
-          onClick={() => navigate(`/hospital-admin/eecp/courses/${session.courseId}`)}
-          className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-800 transition"
-        >
-          <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Back to Course #{course.courseNumber}
-        </button>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <button
+            onClick={() => navigate(`/hospital-admin/eecp/courses/${session.courseId}`)}
+            className="text-xs text-teal-600 hover:text-teal-700 font-medium"
+          >
+            ← Back to Course #{course.courseNumber}
+          </button>
+          <div className="flex items-center gap-3 mt-1">
+            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
+              Session Workspace: #{session.sessionNumber}
+            </h1>
+            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${statusCfg.color}`}>
+              {statusCfg.label}
+            </span>
+          </div>
+        </div>
 
         {/* Action Controls for Staff */}
         <div className="flex flex-wrap items-center gap-2">
           {session.status === 'SCHEDULED' && (
             <button
               onClick={() => handleTransitionStatus('PRE_ASSESSMENT')}
-              className="px-4 py-2 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-xl transition shadow-xs"
+              className="px-3 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-medium shadow-xs transition-colors"
             >
               Start Pre-Assessment
             </button>
@@ -300,7 +307,7 @@ export default function EecpSessionWorkspacePage() {
           {session.status === 'PRE_ASSESSMENT' && (
             <button
               onClick={() => handleTransitionStatus('IN_PROGRESS')}
-              className="px-4 py-2 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-xl transition shadow-xs"
+              className="px-3 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-medium shadow-xs transition-colors"
             >
               Start Treatment (Bed Therapy)
             </button>
@@ -310,13 +317,13 @@ export default function EecpSessionWorkspacePage() {
             <>
               <button
                 onClick={() => handleTransitionStatus('PAUSED')}
-                className="px-3.5 py-2 text-xs font-semibold text-orange-700 bg-orange-50 hover:bg-orange-100 border border-orange-200 rounded-xl transition"
+                className="px-3 py-2 bg-white border border-slate-300 text-orange-700 hover:bg-orange-50 rounded-lg text-xs font-medium shadow-xs transition-colors"
               >
                 Pause Therapy
               </button>
               <button
                 onClick={() => setCompleteModalOpen(true)}
-                className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-xs"
+                className="px-3 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-medium shadow-xs transition-colors"
               >
                 Finish & Complete Session
               </button>
@@ -327,13 +334,13 @@ export default function EecpSessionWorkspacePage() {
             <>
               <button
                 onClick={() => handleTransitionStatus('IN_PROGRESS')}
-                className="px-4 py-2 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-xl transition shadow-xs"
+                className="px-3 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-medium shadow-xs transition-colors"
               >
                 Resume Therapy
               </button>
               <button
                 onClick={() => setCompleteModalOpen(true)}
-                className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-xs"
+                className="px-3 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-medium shadow-xs transition-colors"
               >
                 Complete Session
               </button>
@@ -343,14 +350,14 @@ export default function EecpSessionWorkspacePage() {
           {!isLocked && (
             <button
               onClick={() => setCancelModalOpen(true)}
-              className="px-3 py-2 text-xs font-medium text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition"
+              className="px-3 py-2 bg-white border border-red-200 text-red-600 hover:bg-red-50 rounded-lg text-xs font-medium shadow-xs transition-colors"
             >
               Cancel Session
             </button>
           )}
 
           {isCompleted && (
-            <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
               <svg className="w-4 h-4 mr-1 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
@@ -361,7 +368,7 @@ export default function EecpSessionWorkspacePage() {
       </div>
 
       {/* Patient & Session Header Card */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 font-bold text-lg">
             {patient.firstName?.[0] || 'P'}
@@ -410,7 +417,7 @@ export default function EecpSessionWorkspacePage() {
       {/* Main Grid: Pre-Assessment & Telemetry Readings */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* CARD 1: PRE-SESSION ASSESSMENT */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-xs space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <div className="flex items-center space-x-2">
               <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
@@ -562,7 +569,7 @@ export default function EecpSessionWorkspacePage() {
         </div>
 
         {/* CARD 2: LIVE INTRA-SESSION MONITORING READINGS */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-4 flex flex-col justify-between">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-xs space-y-4 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center space-x-2">
@@ -582,7 +589,7 @@ export default function EecpSessionWorkspacePage() {
             <div className="mt-3 overflow-x-auto max-h-[220px] overflow-y-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-100 font-semibold text-slate-500 uppercase tracking-wider">
+                  <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-600 uppercase tracking-wider">
                     <th className="py-2 px-2.5">Time</th>
                     <th className="py-2 px-2.5">Pressure</th>
                     <th className="py-2 px-2.5">BP</th>
@@ -703,7 +710,7 @@ export default function EecpSessionWorkspacePage() {
 
       {/* CARD 3: POST-SESSION SUMMARY (When Completed or Locked) */}
       {(isCompleted || session.postAssessment) && (
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-xs space-y-3">
           <div className="flex items-center space-x-2 pb-3 border-b border-slate-100">
             <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

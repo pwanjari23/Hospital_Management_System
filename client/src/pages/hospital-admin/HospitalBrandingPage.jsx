@@ -116,14 +116,16 @@ export default function HospitalBrandingPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-          Hospital Branding & Print Letterhead
-        </h1>
-        <p className="text-sm text-slate-500 mt-1">
-          Configure official hospital identity, printable letterhead layout, and notification rules.
-        </p>
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
+            Hospital Branding & Print Letterhead
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">
+            Configure official hospital identity, printable letterhead layout, and notification rules.
+          </p>
+        </div>
       </div>
 
       {saveSuccess && (
@@ -142,7 +144,7 @@ export default function HospitalBrandingPage() {
       )}
 
       {/* Live Letterhead Preview Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs">
+      <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-xs">
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
             Live Print Letterhead Preview
@@ -199,9 +201,9 @@ export default function HospitalBrandingPage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-6">
         {/* Hospital Identity Form */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-xs space-y-6">
           <h2 className="text-base font-bold text-slate-900">Hospital Details & Identity</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -369,7 +371,7 @@ export default function HospitalBrandingPage() {
         </div>
 
         {/* Notification Rules Configuration */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-xs space-y-4">
           <h2 className="text-base font-bold text-slate-900">Hospital Notification Preferences</h2>
           <p className="text-xs text-slate-500">
             Control which automated events trigger in-app alerts and communications for your hospital staff.
@@ -407,7 +409,7 @@ export default function HospitalBrandingPage() {
           <button
             type="submit"
             disabled={saving}
-            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl shadow-xs transition disabled:opacity-50"
+            className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white font-medium text-xs rounded-lg shadow-xs transition-colors disabled:opacity-50"
           >
             {saving ? 'Saving Changes...' : 'Save Branding & Preferences'}
           </button>

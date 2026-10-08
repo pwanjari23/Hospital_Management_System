@@ -423,9 +423,9 @@ export default function ClinicalMastersPage() {
       )}
 
       {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
             Clinical Masters
           </h1>
           <p className="text-sm text-slate-500 mt-1">
@@ -433,17 +433,17 @@ export default function ClinicalMastersPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => fetchData(true)}
             disabled={loading || refreshing}
             title={refreshing ? 'Refreshing...' : 'Refresh catalog'}
             aria-label="Refresh catalog"
-            className="p-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300 transition shadow-2xs disabled:opacity-50 flex items-center justify-center"
+            className="p-2 bg-white border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 shadow-xs transition-colors disabled:opacity-50"
           >
             <svg
-              className={`w-4 h-4 ${refreshing ? 'animate-spin text-blue-600' : 'text-slate-500'}`}
+              className={`w-4 h-4 ${refreshing ? 'animate-spin text-teal-600' : 'text-slate-500'}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -461,7 +461,7 @@ export default function ClinicalMastersPage() {
             <button
               type="button"
               onClick={handleOpenAdd}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-xs focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition"
+              className="inline-flex items-center gap-1.5 px-3 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-medium shadow-xs transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -473,25 +473,27 @@ export default function ClinicalMastersPage() {
       </div>
 
       {/* Tabs Navigation Bar */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs p-1.5 flex flex-wrap gap-1">
-        {TABS.map((tab) => {
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => handleTabChange(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition ${
-                isActive
-                  ? 'bg-blue-600 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
-            >
-              <span>{tab.icon}</span>
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
+      <div className="border-b border-slate-200">
+        <nav className="flex space-x-6 overflow-x-auto pb-px">
+          {TABS.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => handleTabChange(tab.id)}
+                className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 ${
+                  isActive
+                    ? 'border-teal-600 text-teal-600'
+                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                }`}
+              >
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </nav>
       </div>
 
       {/* Error Alert */}
@@ -514,9 +516,9 @@ export default function ClinicalMastersPage() {
       )}
 
       {/* Search & Filters */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs flex flex-col sm:flex-row gap-3">
+      <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -526,7 +528,7 @@ export default function ClinicalMastersPage() {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder={`Search ${currentTabMeta?.label.toLowerCase()}...`}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
+            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white transition"
           />
         </div>
 
@@ -536,7 +538,7 @@ export default function ClinicalMastersPage() {
             setStatusFilter(e.target.value);
             setPage(1);
           }}
-          className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
         >
           <option value="ALL">All Statuses</option>
           <option value="ACTIVE">Active Only</option>
@@ -545,15 +547,15 @@ export default function ClinicalMastersPage() {
       </div>
 
       {/* Main Table / Data View */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden">
         {loading && !refreshing ? (
           <div className="p-8 text-center space-y-3">
-            <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+            <div className="w-8 h-8 border-3 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto" />
             <p className="text-xs text-slate-500 font-medium">Loading {currentTabMeta?.label}...</p>
           </div>
         ) : items.length === 0 ? (
           <div className="p-12 text-center space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto text-xl">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto text-xl">
               {currentTabMeta?.icon}
             </div>
             <h3 className="text-sm font-bold text-slate-800">No {currentTabMeta?.label} records configured</h3>
@@ -564,7 +566,7 @@ export default function ClinicalMastersPage() {
               <button
                 type="button"
                 onClick={handleOpenAdd}
-                className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition"
+                className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-600 text-white text-xs font-semibold hover:bg-teal-700 transition"
               >
                 Add First Record
               </button>
@@ -575,7 +577,7 @@ export default function ClinicalMastersPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold uppercase tracking-wider text-slate-600">
                     <th className="py-3.5 px-4 sm:px-6">Name</th>
                     {activeTab === 'medicines' && (
                       <>

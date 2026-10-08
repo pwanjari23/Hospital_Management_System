@@ -180,22 +180,25 @@ export default function PharmacyDispensingWorkspacePage() {
   const isFullyDispensedAlready = prescription.dispensingStatus === 'FULLY_DISPENSED';
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-12">
+    <div className="space-y-6">
       {/* Breadcrumb & Navigation */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm text-slate-500">
-          <Link to="/hospital-admin/pharmacy" className="hover:text-teal-600 transition">
-            Pharmacy Queue
-          </Link>
-          <span>/</span>
-          <span className="text-slate-800 font-semibold font-mono">{prescription.prescriptionNumber}</span>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-1">
+            <Link to="/hospital-admin/pharmacy" className="hover:text-teal-600 transition">
+              Pharmacy Queue
+            </Link>
+            <span>/</span>
+            <span className="text-slate-800 font-mono font-bold">{prescription.prescriptionNumber}</span>
+          </div>
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Dispensing Workspace</h1>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Link
             to="/hospital-admin/pharmacy"
-            className="px-3 py-1.5 text-xs text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition"
+            className="px-3 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-medium shadow-xs transition-colors"
           >
-            ← Back to Queue
+            &larr; Back to Queue
           </Link>
         </div>
       </div>
@@ -216,7 +219,7 @@ export default function PharmacyDispensingWorkspacePage() {
       )}
 
       {/* Patient Header Card */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6">
+      <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 font-bold text-xl shrink-0">
@@ -279,7 +282,7 @@ export default function PharmacyDispensingWorkspacePage() {
           return (
             <div
               key={item.id}
-              className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 transition-shadow hover:shadow-sm"
+              className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-5 transition-shadow hover:shadow-sm"
             >
               {/* Item Header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
@@ -356,7 +359,7 @@ export default function PharmacyDispensingWorkspacePage() {
 
                     <div className="border border-slate-200/80 rounded-xl overflow-hidden">
                       <table className="w-full text-left text-xs text-slate-600">
-                        <thead className="bg-slate-50 font-semibold text-slate-500 uppercase">
+                        <thead className="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-600 uppercase tracking-wider">
                           <tr>
                             <th className="py-2.5 px-3">Batch Number</th>
                             <th className="py-2.5 px-3">Expiry Date</th>
@@ -405,7 +408,7 @@ export default function PharmacyDispensingWorkspacePage() {
 
       {/* Pharmacist Dispensing Action Box */}
       {!isFullyDispensedAlready && (
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-6 space-y-4">
           <h3 className="font-bold text-slate-800 text-lg">Dispensing Confirmation</h3>
 
           <div>

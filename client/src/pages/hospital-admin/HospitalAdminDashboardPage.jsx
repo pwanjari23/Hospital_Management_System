@@ -80,10 +80,10 @@ export default function HospitalAdminDashboardPage() {
         </div>
       )}
 
-      {/* Top Banner & Header - Exactly matching Super Admin Dashboard (Screenshot 1) */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Top Banner & Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
             {hospitalName} Dashboard
           </h1>
           <p className="text-sm text-slate-500 mt-1">
@@ -95,17 +95,17 @@ export default function HospitalAdminDashboardPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => fetchDashboardData(true)}
             disabled={loading || refreshing}
             title={refreshing ? 'Refreshing...' : 'Refresh metrics'}
             aria-label="Refresh metrics"
-            className="p-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300 transition shadow-2xs disabled:opacity-50 flex items-center justify-center"
+            className="p-2 bg-white border border-slate-300 rounded-lg text-xs font-medium text-slate-700 hover:bg-slate-50 shadow-xs transition-colors disabled:opacity-50 flex items-center justify-center"
           >
             <svg
-              className={`w-4 h-4 ${refreshing ? 'animate-spin text-blue-600' : 'text-slate-500'}`}
+              className={`w-4 h-4 ${refreshing ? 'animate-spin text-teal-600' : 'text-slate-500'}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -123,9 +123,9 @@ export default function HospitalAdminDashboardPage() {
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-xs focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition"
+              className="inline-flex items-center gap-1.5 px-3 py-2 bg-teal-600 text-white rounded-lg text-xs font-medium hover:bg-teal-700 shadow-xs transition-colors"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
               </svg>
               <span>Register Patient</span>
@@ -285,16 +285,16 @@ export default function HospitalAdminDashboardPage() {
         </div>
       </div>
 
-      {/* Recent Patients Table - Exactly matching Screenshot 1 Recent Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
-        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+      {/* Recent Patients Table */}
+      <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between">
           <div>
-            <h3 className="text-base font-bold text-slate-900">Recent Registrations</h3>
-            <p className="text-xs text-slate-500 mt-0.5">Latest 5 registered patients ordered by admission date.</p>
+            <h3 className="text-sm font-bold text-slate-800">Recent Registrations</h3>
+            <p className="text-xs text-slate-400 mt-0.5">Latest 5 registered patients ordered by admission date.</p>
           </div>
           <Link
             to="/hospital-admin/patients"
-            className="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition"
+            className="text-xs font-semibold text-teal-600 hover:text-teal-800 flex items-center gap-1 transition"
           >
             <span>View All &gt;</span>
           </Link>
@@ -310,7 +310,7 @@ export default function HospitalAdminDashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="bg-white border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-600 uppercase tracking-wider">
                   <th className="py-3 px-6">PATIENT</th>
                   <th className="py-3 px-6">UHID</th>
                   <th className="py-3 px-6">CONTACT</th>

@@ -401,28 +401,28 @@ export default function BillingInvoicesPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate('/hospital-admin/billing')}
-              className="text-slate-400 hover:text-slate-600 transition"
+              className="text-xs text-slate-500 hover:text-slate-700 font-medium transition"
             >
               &larr; Overview
             </button>
             <span className="text-slate-300">/</span>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Invoices</h1>
+            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Invoices</h1>
           </div>
           <p className="text-sm text-slate-500 mt-1">
             Browse, search, generate invoices, and collect payments.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={openCreateModal}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition shadow-xs flex items-center gap-2"
+            className="inline-flex items-center gap-1.5 px-3 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-medium shadow-xs transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
@@ -512,7 +512,7 @@ export default function BillingInvoicesPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/60 text-[11px] font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-100">
+              <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-600 uppercase tracking-wider">
                 <th className="py-3 px-4">Invoice #</th>
                 <th className="py-3 px-4">Patient</th>
                 <th className="py-3 px-4">Date</th>

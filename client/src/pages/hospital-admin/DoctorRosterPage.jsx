@@ -242,23 +242,23 @@ export default function DoctorRosterPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Doctor Roster & Availability</h1>
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Doctor Roster & Availability</h1>
           <p className="text-sm text-slate-500 mt-1">
             Configure weekly clinic working hours, breaks, slot generation durations, and mark doctor leaves.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => {
               setRefreshing(true);
               fetchData();
             }}
             disabled={refreshing}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition shadow-xs"
+            className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-medium text-slate-700 hover:bg-slate-50 shadow-xs transition-colors disabled:opacity-50"
           >
             <svg
-              className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-blue-600' : 'text-slate-400'}`}
+              className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-teal-600' : 'text-slate-500'}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -283,7 +283,7 @@ export default function DoctorRosterPage() {
                     error: '',
                   })
                 }
-                className="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold shadow-xs transition"
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-medium shadow-xs transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -311,7 +311,7 @@ export default function DoctorRosterPage() {
                     error: '',
                   })
                 }
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-xs transition"
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-medium shadow-xs transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
@@ -334,46 +334,41 @@ export default function DoctorRosterPage() {
       )}
 
       {/* Tabs Switcher */}
-      <div className="flex border-b border-slate-200">
-        <button
-          onClick={() => setActiveTab('schedules')}
-          className={`py-2.5 px-4 text-xs font-semibold border-b-2 transition flex items-center gap-2 ${
-            activeTab === 'schedules'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          <span>Weekly Doctor Schedules ({schedules.length})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('leaves')}
-          className={`py-2.5 px-4 text-xs font-semibold border-b-2 transition flex items-center gap-2 ${
-            activeTab === 'leaves'
-              ? 'border-amber-600 text-amber-600'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>Doctor Leaves & Blockouts ({leaves.length})</span>
-        </button>
+      <div className="border-b border-slate-200">
+        <nav className="flex space-x-6 overflow-x-auto pb-px">
+          <button
+            onClick={() => setActiveTab('schedules')}
+            className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+              activeTab === 'schedules'
+                ? 'border-teal-600 text-teal-600'
+                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+            }`}
+          >
+            Weekly Doctor Schedules ({schedules.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('leaves')}
+            className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+              activeTab === 'leaves'
+                ? 'border-teal-600 text-teal-600'
+                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+            }`}
+          >
+            Doctor Leaves & Blockouts ({leaves.length})
+          </button>
+        </nav>
       </div>
 
       {/* SCHEDULES TAB */}
       {activeTab === 'schedules' && (
         <div className="space-y-4">
           {/* Filters Bar */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 p-3 shadow-2xs flex flex-wrap items-center gap-3">
+          <div className="bg-white rounded-xl border border-slate-200/80 p-4 shadow-xs flex flex-wrap items-center gap-3">
             <div className="w-full sm:w-64">
               <select
                 value={selectedDoctorFilter}
                 onChange={(e) => setSelectedDoctorFilter(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                className="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
               >
                 <option value="ALL">All Doctors</option>
                 {doctors.map((doc) => (
@@ -388,7 +383,7 @@ export default function DoctorRosterPage() {
               <select
                 value={selectedDayFilter}
                 onChange={(e) => setSelectedDayFilter(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                className="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
               >
                 <option value="ALL">All Days of Week</option>
                 {DAYS_OF_WEEK.map((d) => (
@@ -401,10 +396,10 @@ export default function DoctorRosterPage() {
           </div>
 
           {/* Schedules Table */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
+          <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden">
             {loading ? (
               <div className="py-20 text-center">
-                <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <div className="w-8 h-8 border-2 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
                 <p className="text-xs text-slate-500">Loading schedules...</p>
               </div>
             ) : schedules.length === 0 ? (
@@ -417,7 +412,7 @@ export default function DoctorRosterPage() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50/75 border-b border-slate-200/80 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  <thead className="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold uppercase tracking-wider text-slate-600">
                     <tr>
                       <th className="px-4 py-3.5">Doctor</th>
                       <th className="px-4 py-3.5">Day</th>
@@ -528,7 +523,7 @@ export default function DoctorRosterPage() {
 
       {/* LEAVES TAB */}
       {activeTab === 'leaves' && (
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden">
           {loading ? (
             <div className="py-20 text-center">
               <div className="w-8 h-8 border-2 border-amber-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
@@ -544,7 +539,7 @@ export default function DoctorRosterPage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50/75 border-b border-slate-200/80 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <thead className="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold uppercase tracking-wider text-slate-600">
                   <tr>
                     <th className="px-4 py-3.5">Doctor</th>
                     <th className="px-4 py-3.5">Date Range</th>

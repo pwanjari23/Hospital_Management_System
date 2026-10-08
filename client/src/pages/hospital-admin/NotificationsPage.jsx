@@ -58,9 +58,9 @@ export default function NotificationsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Notification Center</h1>
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Notification Center</h1>
           <p className="text-sm text-slate-500 mt-1">
             Real-time clinical, operational, and administrative notifications for your hospital.
           </p>
@@ -69,9 +69,9 @@ export default function NotificationsPage() {
         {unreadCount > 0 && (
           <button
             onClick={handleMarkAll}
-            className="px-4 py-2 bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 rounded-xl text-xs font-semibold transition self-start sm:self-auto flex items-center gap-2"
+            className="px-3 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-medium transition-colors shadow-xs flex items-center gap-1.5"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
             </svg>
             Mark All as Read ({unreadCount})
@@ -80,31 +80,33 @@ export default function NotificationsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
-        {[
-          { key: 'ALL', label: 'All Notifications' },
-          { key: 'UNREAD', label: `Unread (${unreadCount})` },
-          { key: 'HIGH', label: 'High Priority & Urgent' },
-        ].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => {
-              setActiveTab(tab.key);
-              setPage(1);
-            }}
-            className={`px-4 py-2 text-xs font-semibold rounded-lg transition ${
-              activeTab === tab.key
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className="border-b border-slate-200">
+        <nav className="flex space-x-6 overflow-x-auto pb-px">
+          {[
+            { key: 'ALL', label: 'All Notifications' },
+            { key: 'UNREAD', label: `Unread (${unreadCount})` },
+            { key: 'HIGH', label: 'High Priority & Urgent' },
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => {
+                setActiveTab(tab.key);
+                setPage(1);
+              }}
+              className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+                activeTab === tab.key
+                  ? 'border-teal-600 text-teal-600'
+                  : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </nav>
       </div>
 
       {/* List / Content Area */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden">
         {loading && (
           <div className="py-20 text-center text-slate-400">
             <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />

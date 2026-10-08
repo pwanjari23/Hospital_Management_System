@@ -586,9 +586,9 @@ export default function IpdAdmissionDetailsPage() {
   const isActiveStay = !isDischarged && !isCancelled;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* 1. Header with Breadcrumb & Quick Operational Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <button
             onClick={() => navigate('/hospital-admin/ipd/admissions')}
@@ -680,7 +680,7 @@ export default function IpdAdmissionDetailsPage() {
       </div>
 
       {/* 2. Patient Clinical Context Header */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-teal-50 border border-teal-200 text-teal-700 font-bold text-lg flex items-center justify-center">
             {p?.firstName?.[0] || 'P'}
@@ -725,29 +725,34 @@ export default function IpdAdmissionDetailsPage() {
       </div>
 
       {/* 3. Inpatient Workspace Navigation Tabs */}
-      <div className="flex border-b border-slate-200 overflow-x-auto text-sm font-medium">
-        {[
-          { key: 'overview', label: 'Stay Overview' },
-          { key: 'vitals', label: `Vitals (${vitals.length})` },
-          { key: 'progress', label: `Doctor SOAP (${progressNotes.length})` },
-          { key: 'nursing', label: `Nursing Care (${nursingNotes.length})` },
-          { key: 'medications', label: `Medications (${prescriptions.length})` },
-          { key: 'investigations', label: `Investigations (${investigations.length})` },
-          { key: 'timeline', label: 'Clinical Timeline' },
-          { key: 'discharge', label: isDischarged ? 'Discharge Summary' : 'Discharge Planning' },
-        ].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            className={`px-4 py-2.5 border-b-2 whitespace-nowrap transition-colors ${
-              activeTab === tab.key
-                ? 'border-teal-600 text-teal-700 font-semibold'
-                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className="border-b border-slate-200">
+        <nav className="flex space-x-6 overflow-x-auto pb-px">
+          {[
+            { key: 'overview', label: 'Stay Overview' },
+            { key: 'vitals', label: `Vitals (${vitals.length})` },
+            { key: 'progress', label: `Doctor SOAP (${progressNotes.length})` },
+            { key: 'nursing', label: `Nursing Care (${nursingNotes.length})` },
+            { key: 'medications', label: `Medications (${prescriptions.length})` },
+            { key: 'investigations', label: `Investigations (${investigations.length})` },
+            { key: 'timeline', label: 'Clinical Timeline' },
+            { key: 'discharge', label: isDischarged ? 'Discharge Summary' : 'Discharge Planning' },
+          ].map((tab) => {
+            const isActive = activeTab === tab.key;
+            return (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`pb-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
+                  isActive
+                    ? 'border-teal-600 text-teal-600'
+                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </nav>
       </div>
 
       {/* 4. TAB CONTENTS */}

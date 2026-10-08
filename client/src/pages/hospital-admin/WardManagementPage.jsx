@@ -121,9 +121,9 @@ export default function WardManagementPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <button
@@ -134,17 +134,19 @@ export default function WardManagementPage() {
             </button>
           </div>
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight mt-1">Ward Management</h1>
-          <p className="text-sm text-slate-500">Configure hospital wards, capacities, and gender policies</p>
+          <p className="text-sm text-slate-500 mt-1">Configure hospital wards, capacities, and gender policies</p>
         </div>
-        <button
-          onClick={openCreateModal}
-          className="px-3.5 py-2 text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 rounded-lg shadow-xs transition-colors flex items-center gap-1.5 self-start sm:self-auto"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-          </svg>
-          Add Ward
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={openCreateModal}
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-teal-600 hover:bg-teal-700 rounded-lg shadow-xs transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Add Ward
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -194,7 +196,7 @@ export default function WardManagementPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 text-slate-500 text-xs font-semibold uppercase tracking-wider border-b border-slate-200">
+              <thead className="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-600 uppercase tracking-wider">
                 <tr>
                   <th className="px-5 py-3.5">Ward Code</th>
                   <th className="px-5 py-3.5">Ward Name</th>
