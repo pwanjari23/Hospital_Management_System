@@ -31,6 +31,22 @@ import MedicineBatch from './MedicineBatch.js';
 import PharmacyStockTransaction from './PharmacyStockTransaction.js';
 import PrescriptionDispensing from './PrescriptionDispensing.js';
 import PrescriptionDispensingItem from './PrescriptionDispensingItem.js';
+import InvestigationSample from './InvestigationSample.js';
+import InvestigationResult from './InvestigationResult.js';
+import BillingService from './BillingService.js';
+import Invoice from './Invoice.js';
+import InvoiceItem from './InvoiceItem.js';
+import Payment from './Payment.js';
+import Receipt from './Receipt.js';
+import Ward from './Ward.js';
+import Bed from './Bed.js';
+import IpdAdmission from './IpdAdmission.js';
+import IpdBedTransfer from './IpdBedTransfer.js';
+import IpdProgressNote from './IpdProgressNote.js';
+import IpdNursingNote from './IpdNursingNote.js';
+import DischargeSummary from './DischargeSummary.js';
+import DischargeMedication from './DischargeMedication.js';
+import Notification from './Notification.js';
 
 // ==========================================
 // Centralized Model Associations
@@ -935,6 +951,401 @@ PrescriptionDispensingItem.belongsTo(MedicineBatch, {
   as: 'batch',
 });
 
+// ==========================================
+// Phase 8B: Laboratory & Investigation Results Associations
+// ==========================================
+
+// Hospital <-> InvestigationSample / InvestigationResult (1:N)
+Hospital.hasMany(InvestigationSample, {
+  foreignKey: 'hospitalId',
+  as: 'investigationSamples',
+  onDelete: 'RESTRICT',
+});
+InvestigationSample.belongsTo(Hospital, {
+  foreignKey: 'hospitalId',
+  as: 'hospital',
+});
+
+Hospital.hasMany(InvestigationResult, {
+  foreignKey: 'hospitalId',
+  as: 'investigationResults',
+  onDelete: 'RESTRICT',
+});
+InvestigationResult.belongsTo(Hospital, {
+  foreignKey: 'hospitalId',
+  as: 'hospital',
+});
+
+// InvestigationOrder <-> InvestigationSample (1:N)
+InvestigationOrder.hasMany(InvestigationSample, {
+  foreignKey: 'investigationOrderId',
+  as: 'samples',
+  onDelete: 'RESTRICT',
+});
+InvestigationSample.belongsTo(InvestigationOrder, {
+  foreignKey: 'investigationOrderId',
+  as: 'order',
+});
+
+// InvestigationOrder <-> InvestigationResult (1:1)
+InvestigationOrder.hasOne(InvestigationResult, {
+  foreignKey: 'investigationOrderId',
+  as: 'result',
+  onDelete: 'RESTRICT',
+});
+InvestigationResult.belongsTo(InvestigationOrder, {
+  foreignKey: 'investigationOrderId',
+  as: 'order',
+});
+
+// InvestigationSample <-> InvestigationResult (1:N or 1:1)
+InvestigationSample.hasOne(InvestigationResult, {
+  foreignKey: 'sampleId',
+  as: 'result',
+  onDelete: 'SET NULL',
+});
+InvestigationResult.belongsTo(InvestigationSample, {
+  foreignKey: 'sampleId',
+  as: 'sample',
+});
+
+// Patient <-> InvestigationSample / InvestigationResult (1:N)
+Patient.hasMany(InvestigationSample, {
+  foreignKey: 'patientId',
+  as: 'investigationSamples',
+  onDelete: 'RESTRICT',
+});
+InvestigationSample.belongsTo(Patient, {
+  foreignKey: 'patientId',
+  as: 'patient',
+});
+
+Patient.hasMany(InvestigationResult, {
+  foreignKey: 'patientId',
+  as: 'investigationResults',
+  onDelete: 'RESTRICT',
+});
+InvestigationResult.belongsTo(Patient, {
+  foreignKey: 'patientId',
+  as: 'patient',
+});
+
+// Encounter <-> InvestigationResult (1:N)
+Encounter.hasMany(InvestigationResult, {
+  foreignKey: 'encounterId',
+  as: 'investigationResults',
+  onDelete: 'RESTRICT',
+});
+InvestigationResult.belongsTo(Encounter, {
+  foreignKey: 'encounterId',
+  as: 'encounter',
+});
+
+// Investigation <-> InvestigationResult (1:N)
+Investigation.hasMany(InvestigationResult, {
+  foreignKey: 'investigationId',
+  as: 'results',
+  onDelete: 'RESTRICT',
+});
+InvestigationResult.belongsTo(Investigation, {
+  foreignKey: 'investigationId',
+  as: 'investigation',
+});
+
+// Doctor User <-> InvestigationResult (1:N)
+User.hasMany(InvestigationResult, {
+  foreignKey: 'doctorId',
+  as: 'investigationResultsOrdered',
+  onDelete: 'RESTRICT',
+});
+InvestigationResult.belongsTo(User, {
+  foreignKey: 'doctorId',
+  as: 'doctor',
+});
+
+// Staff User <-> Sample tracking (collectedBy, receivedBy)
+User.hasMany(InvestigationSample, {
+  foreignKey: 'collectedBy',
+  as: 'collectedSamples',
+  onDelete: 'SET NULL',
+});
+InvestigationSample.belongsTo(User, {
+  foreignKey: 'collectedBy',
+  as: 'collector',
+});
+
+User.hasMany(InvestigationSample, {
+  foreignKey: 'receivedBy',
+  as: 'receivedSamples',
+  onDelete: 'SET NULL',
+});
+InvestigationSample.belongsTo(User, {
+  foreignKey: 'receivedBy',
+  as: 'receiver',
+});
+
+// Staff User <-> Result tracking (enteredBy, verifiedBy, finalizedBy)
+User.hasMany(InvestigationResult, {
+  foreignKey: 'enteredBy',
+  as: 'enteredResults',
+  onDelete: 'SET NULL',
+});
+InvestigationResult.belongsTo(User, {
+  foreignKey: 'enteredBy',
+  as: 'technician',
+});
+
+User.hasMany(InvestigationResult, {
+  foreignKey: 'verifiedBy',
+  as: 'verifiedResults',
+  onDelete: 'SET NULL',
+});
+InvestigationResult.belongsTo(User, {
+  foreignKey: 'verifiedBy',
+  as: 'verifier',
+});
+
+User.hasMany(InvestigationResult, {
+  foreignKey: 'finalizedBy',
+  as: 'finalizedResults',
+  onDelete: 'SET NULL',
+});
+InvestigationResult.belongsTo(User, {
+  foreignKey: 'finalizedBy',
+  as: 'finalizer',
+});
+
+// ==========================================
+// Phase 8C: Billing, Invoices, Payments, Receipts
+// ==========================================
+
+// Hospital <-> Billing models
+Hospital.hasMany(BillingService, { foreignKey: 'hospitalId', as: 'billingServices', onDelete: 'RESTRICT' });
+BillingService.belongsTo(Hospital, { foreignKey: 'hospitalId', as: 'hospital' });
+
+Hospital.hasMany(Invoice, { foreignKey: 'hospitalId', as: 'invoices', onDelete: 'RESTRICT' });
+Invoice.belongsTo(Hospital, { foreignKey: 'hospitalId', as: 'hospital' });
+
+Hospital.hasMany(InvoiceItem, { foreignKey: 'hospitalId', as: 'invoiceItems', onDelete: 'RESTRICT' });
+InvoiceItem.belongsTo(Hospital, { foreignKey: 'hospitalId', as: 'hospital' });
+
+Hospital.hasMany(Payment, { foreignKey: 'hospitalId', as: 'payments', onDelete: 'RESTRICT' });
+Payment.belongsTo(Hospital, { foreignKey: 'hospitalId', as: 'hospital' });
+
+Hospital.hasMany(Receipt, { foreignKey: 'hospitalId', as: 'receipts', onDelete: 'RESTRICT' });
+Receipt.belongsTo(Hospital, { foreignKey: 'hospitalId', as: 'hospital' });
+
+// Department <-> BillingService
+Department.hasMany(BillingService, { foreignKey: 'departmentId', as: 'billingServices', onDelete: 'SET NULL' });
+BillingService.belongsTo(Department, { foreignKey: 'departmentId', as: 'department' });
+
+// Patient <-> Invoices, Payments, Receipts
+Patient.hasMany(Invoice, { foreignKey: 'patientId', as: 'invoices', onDelete: 'RESTRICT' });
+Invoice.belongsTo(Patient, { foreignKey: 'patientId', as: 'patient' });
+
+Patient.hasMany(Payment, { foreignKey: 'patientId', as: 'payments', onDelete: 'RESTRICT' });
+Payment.belongsTo(Patient, { foreignKey: 'patientId', as: 'patient' });
+
+Patient.hasMany(Receipt, { foreignKey: 'patientId', as: 'receipts', onDelete: 'RESTRICT' });
+Receipt.belongsTo(Patient, { foreignKey: 'patientId', as: 'patient' });
+
+// Invoice <-> Encounter, Appointment
+Encounter.hasMany(Invoice, { foreignKey: 'encounterId', as: 'invoices', onDelete: 'SET NULL' });
+Invoice.belongsTo(Encounter, { foreignKey: 'encounterId', as: 'encounter' });
+
+Appointment.hasMany(Invoice, { foreignKey: 'appointmentId', as: 'invoices', onDelete: 'SET NULL' });
+Invoice.belongsTo(Appointment, { foreignKey: 'appointmentId', as: 'appointment' });
+
+// Invoice <-> InvoiceItem (1:N)
+Invoice.hasMany(InvoiceItem, { foreignKey: 'invoiceId', as: 'items', onDelete: 'CASCADE' });
+InvoiceItem.belongsTo(Invoice, { foreignKey: 'invoiceId', as: 'invoice' });
+
+// BillingService <-> InvoiceItem (1:N)
+BillingService.hasMany(InvoiceItem, { foreignKey: 'billingServiceId', as: 'invoiceItems', onDelete: 'SET NULL' });
+InvoiceItem.belongsTo(BillingService, { foreignKey: 'billingServiceId', as: 'billingService' });
+
+// Invoice <-> Payment (1:N)
+Invoice.hasMany(Payment, { foreignKey: 'invoiceId', as: 'payments', onDelete: 'RESTRICT' });
+Payment.belongsTo(Invoice, { foreignKey: 'invoiceId', as: 'invoice' });
+
+// PaymentMode <-> Payment (1:N)
+PaymentMode.hasMany(Payment, { foreignKey: 'paymentModeId', as: 'payments', onDelete: 'RESTRICT' });
+Payment.belongsTo(PaymentMode, { foreignKey: 'paymentModeId', as: 'paymentMode' });
+
+// Payment <-> Receipt (1:1)
+Payment.hasOne(Receipt, { foreignKey: 'paymentId', as: 'receipt', onDelete: 'RESTRICT' });
+Receipt.belongsTo(Payment, { foreignKey: 'paymentId', as: 'payment' });
+
+// Invoice <-> Receipt (1:N)
+Invoice.hasMany(Receipt, { foreignKey: 'invoiceId', as: 'receipts', onDelete: 'RESTRICT' });
+Receipt.belongsTo(Invoice, { foreignKey: 'invoiceId', as: 'invoice' });
+
+// User audit associations
+BillingService.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+BillingService.belongsTo(User, { foreignKey: 'updatedBy', as: 'updater' });
+
+Invoice.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+Invoice.belongsTo(User, { foreignKey: 'updatedBy', as: 'updater' });
+Invoice.belongsTo(User, { foreignKey: 'cancelledBy', as: 'canceller' });
+
+Payment.belongsTo(User, { foreignKey: 'receivedBy', as: 'receiver' });
+Payment.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+
+Receipt.belongsTo(User, { foreignKey: 'generatedBy', as: 'generator' });
+
+// ==========================================
+// Phase 9A: IPD Admission, Ward & Bed Management Associations
+// ==========================================
+
+// Hospital <-> Ward (1:N)
+Hospital.hasMany(Ward, { foreignKey: 'hospitalId', as: 'wards', onDelete: 'RESTRICT' });
+Ward.belongsTo(Hospital, { foreignKey: 'hospitalId', as: 'hospital' });
+
+// Hospital <-> Bed (1:N)
+Hospital.hasMany(Bed, { foreignKey: 'hospitalId', as: 'beds', onDelete: 'RESTRICT' });
+Bed.belongsTo(Hospital, { foreignKey: 'hospitalId', as: 'hospital' });
+
+// Hospital <-> IpdAdmission (1:N)
+Hospital.hasMany(IpdAdmission, { foreignKey: 'hospitalId', as: 'ipdAdmissions', onDelete: 'RESTRICT' });
+IpdAdmission.belongsTo(Hospital, { foreignKey: 'hospitalId', as: 'hospital' });
+
+// Hospital <-> IpdBedTransfer (1:N)
+Hospital.hasMany(IpdBedTransfer, { foreignKey: 'hospitalId', as: 'ipdBedTransfers', onDelete: 'RESTRICT' });
+IpdBedTransfer.belongsTo(Hospital, { foreignKey: 'hospitalId', as: 'hospital' });
+
+// Department <-> Ward (1:N)
+Department.hasMany(Ward, { foreignKey: 'departmentId', as: 'wards', onDelete: 'SET NULL' });
+Ward.belongsTo(Department, { foreignKey: 'departmentId', as: 'department' });
+
+// Ward <-> Bed (1:N)
+Ward.hasMany(Bed, { foreignKey: 'wardId', as: 'beds', onDelete: 'RESTRICT' });
+Bed.belongsTo(Ward, { foreignKey: 'wardId', as: 'ward' });
+
+// Patient <-> IpdAdmission (1:N)
+Patient.hasMany(IpdAdmission, { foreignKey: 'patientId', as: 'ipdAdmissions', onDelete: 'RESTRICT' });
+IpdAdmission.belongsTo(Patient, { foreignKey: 'patientId', as: 'patient' });
+
+// User (Doctor) <-> IpdAdmission (1:N)
+User.hasMany(IpdAdmission, { foreignKey: 'admittingDoctorId', as: 'admittedPatients', onDelete: 'RESTRICT' });
+IpdAdmission.belongsTo(User, { foreignKey: 'admittingDoctorId', as: 'admittingDoctor' });
+
+// Department <-> IpdAdmission (1:N)
+Department.hasMany(IpdAdmission, { foreignKey: 'departmentId', as: 'ipdAdmissions', onDelete: 'SET NULL' });
+IpdAdmission.belongsTo(Department, { foreignKey: 'departmentId', as: 'department' });
+
+// Ward <-> IpdAdmission (1:N)
+Ward.hasMany(IpdAdmission, { foreignKey: 'wardId', as: 'ipdAdmissions', onDelete: 'RESTRICT' });
+IpdAdmission.belongsTo(Ward, { foreignKey: 'wardId', as: 'ward' });
+
+// Bed <-> IpdAdmission (1:N)
+Bed.hasMany(IpdAdmission, { foreignKey: 'bedId', as: 'ipdAdmissions', onDelete: 'RESTRICT' });
+IpdAdmission.belongsTo(Bed, { foreignKey: 'bedId', as: 'bed' });
+
+// IpdAdmission <-> IpdBedTransfer (1:N)
+IpdAdmission.hasMany(IpdBedTransfer, { foreignKey: 'admissionId', as: 'bedTransfers', onDelete: 'RESTRICT' });
+IpdBedTransfer.belongsTo(IpdAdmission, { foreignKey: 'admissionId', as: 'admission' });
+
+// Patient <-> IpdBedTransfer (1:N)
+Patient.hasMany(IpdBedTransfer, { foreignKey: 'patientId', as: 'bedTransfers', onDelete: 'RESTRICT' });
+IpdBedTransfer.belongsTo(Patient, { foreignKey: 'patientId', as: 'patient' });
+
+// Ward <-> IpdBedTransfer (fromWard & toWard)
+Ward.hasMany(IpdBedTransfer, { foreignKey: 'fromWardId', as: 'transfersOut', onDelete: 'RESTRICT' });
+IpdBedTransfer.belongsTo(Ward, { foreignKey: 'fromWardId', as: 'fromWard' });
+Ward.hasMany(IpdBedTransfer, { foreignKey: 'toWardId', as: 'transfersIn', onDelete: 'RESTRICT' });
+IpdBedTransfer.belongsTo(Ward, { foreignKey: 'toWardId', as: 'toWard' });
+
+// Bed <-> IpdBedTransfer (fromBed & toBed)
+Bed.hasMany(IpdBedTransfer, { foreignKey: 'fromBedId', as: 'transfersOut', onDelete: 'RESTRICT' });
+IpdBedTransfer.belongsTo(Bed, { foreignKey: 'fromBedId', as: 'fromBed' });
+Bed.hasMany(IpdBedTransfer, { foreignKey: 'toBedId', as: 'transfersIn', onDelete: 'RESTRICT' });
+IpdBedTransfer.belongsTo(Bed, { foreignKey: 'toBedId', as: 'toBed' });
+
+// User audit associations
+Ward.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+Ward.belongsTo(User, { foreignKey: 'updatedBy', as: 'updater' });
+
+Bed.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+Bed.belongsTo(User, { foreignKey: 'updatedBy', as: 'updater' });
+
+IpdAdmission.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+IpdAdmission.belongsTo(User, { foreignKey: 'updatedBy', as: 'updater' });
+
+IpdBedTransfer.belongsTo(User, { foreignKey: 'transferredBy', as: 'transferredByUser' });
+
+// ==========================================
+// Phase 9B: IPD Clinical Care & Discharge Associations
+// ==========================================
+
+// IpdAdmission <-> Vital (1:N)
+IpdAdmission.hasMany(Vital, { foreignKey: 'ipdAdmissionId', as: 'vitals', onDelete: 'SET NULL' });
+Vital.belongsTo(IpdAdmission, { foreignKey: 'ipdAdmissionId', as: 'admission' });
+
+// IpdAdmission <-> Encounter (1:N)
+IpdAdmission.hasMany(Encounter, { foreignKey: 'ipdAdmissionId', as: 'encounters', onDelete: 'SET NULL' });
+Encounter.belongsTo(IpdAdmission, { foreignKey: 'ipdAdmissionId', as: 'admission' });
+
+// IpdProgressNote Associations
+Hospital.hasMany(IpdProgressNote, { foreignKey: 'hospitalId', as: 'ipdProgressNotes', onDelete: 'RESTRICT' });
+IpdProgressNote.belongsTo(Hospital, { foreignKey: 'hospitalId', as: 'hospital' });
+
+Patient.hasMany(IpdProgressNote, { foreignKey: 'patientId', as: 'ipdProgressNotes', onDelete: 'RESTRICT' });
+IpdProgressNote.belongsTo(Patient, { foreignKey: 'patientId', as: 'patient' });
+
+IpdAdmission.hasMany(IpdProgressNote, { foreignKey: 'admissionId', as: 'progressNotes', onDelete: 'RESTRICT' });
+IpdProgressNote.belongsTo(IpdAdmission, { foreignKey: 'admissionId', as: 'admission' });
+
+User.hasMany(IpdProgressNote, { foreignKey: 'doctorId', as: 'doctorProgressNotes', onDelete: 'RESTRICT' });
+IpdProgressNote.belongsTo(User, { foreignKey: 'doctorId', as: 'doctor' });
+
+IpdProgressNote.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+IpdProgressNote.belongsTo(User, { foreignKey: 'updatedBy', as: 'updater' });
+IpdProgressNote.belongsTo(User, { foreignKey: 'finalizedBy', as: 'finalizer' });
+
+// IpdNursingNote Associations
+Hospital.hasMany(IpdNursingNote, { foreignKey: 'hospitalId', as: 'ipdNursingNotes', onDelete: 'RESTRICT' });
+IpdNursingNote.belongsTo(Hospital, { foreignKey: 'hospitalId', as: 'hospital' });
+
+Patient.hasMany(IpdNursingNote, { foreignKey: 'patientId', as: 'ipdNursingNotes', onDelete: 'RESTRICT' });
+IpdNursingNote.belongsTo(Patient, { foreignKey: 'patientId', as: 'patient' });
+
+IpdAdmission.hasMany(IpdNursingNote, { foreignKey: 'admissionId', as: 'nursingNotes', onDelete: 'RESTRICT' });
+IpdNursingNote.belongsTo(IpdAdmission, { foreignKey: 'admissionId', as: 'admission' });
+
+User.hasMany(IpdNursingNote, { foreignKey: 'nurseId', as: 'nurseNotes', onDelete: 'RESTRICT' });
+IpdNursingNote.belongsTo(User, { foreignKey: 'nurseId', as: 'nurse' });
+
+IpdNursingNote.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+IpdNursingNote.belongsTo(User, { foreignKey: 'updatedBy', as: 'updater' });
+IpdNursingNote.belongsTo(User, { foreignKey: 'finalizedBy', as: 'finalizer' });
+
+// DischargeSummary Associations
+Hospital.hasMany(DischargeSummary, { foreignKey: 'hospitalId', as: 'dischargeSummaries', onDelete: 'RESTRICT' });
+DischargeSummary.belongsTo(Hospital, { foreignKey: 'hospitalId', as: 'hospital' });
+
+Patient.hasMany(DischargeSummary, { foreignKey: 'patientId', as: 'dischargeSummaries', onDelete: 'RESTRICT' });
+DischargeSummary.belongsTo(Patient, { foreignKey: 'patientId', as: 'patient' });
+
+IpdAdmission.hasOne(DischargeSummary, { foreignKey: 'admissionId', as: 'dischargeSummaryRecord', onDelete: 'RESTRICT' });
+DischargeSummary.belongsTo(IpdAdmission, { foreignKey: 'admissionId', as: 'admission' });
+
+User.hasMany(DischargeSummary, { foreignKey: 'dischargingDoctorId', as: 'dischargedSummaries', onDelete: 'RESTRICT' });
+DischargeSummary.belongsTo(User, { foreignKey: 'dischargingDoctorId', as: 'dischargingDoctor' });
+
+DischargeSummary.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+DischargeSummary.belongsTo(User, { foreignKey: 'updatedBy', as: 'updater' });
+DischargeSummary.belongsTo(User, { foreignKey: 'finalizedBy', as: 'finalizer' });
+
+// DischargeMedication Associations
+Hospital.hasMany(DischargeMedication, { foreignKey: 'hospitalId', as: 'dischargeMedications', onDelete: 'RESTRICT' });
+DischargeMedication.belongsTo(Hospital, { foreignKey: 'hospitalId', as: 'hospital' });
+
+DischargeSummary.hasMany(DischargeMedication, { foreignKey: 'dischargeSummaryId', as: 'medications', onDelete: 'CASCADE' });
+DischargeMedication.belongsTo(DischargeSummary, { foreignKey: 'dischargeSummaryId', as: 'dischargeSummary' });
+
+Medicine.hasMany(DischargeMedication, { foreignKey: 'medicineId', as: 'dischargeMedications', onDelete: 'SET NULL' });
+DischargeMedication.belongsTo(Medicine, { foreignKey: 'medicineId', as: 'medicine' });
+
 export {
   sequelize,
   Hospital,
@@ -969,6 +1380,22 @@ export {
   PharmacyStockTransaction,
   PrescriptionDispensing,
   PrescriptionDispensingItem,
+  InvestigationSample,
+  InvestigationResult,
+  BillingService,
+  Invoice,
+  InvoiceItem,
+  Payment,
+  Receipt,
+  Ward,
+  Bed,
+  IpdAdmission,
+  IpdBedTransfer,
+  IpdProgressNote,
+  IpdNursingNote,
+  DischargeSummary,
+  DischargeMedication,
+  Notification,
 };
 
 export default {
@@ -1005,7 +1432,58 @@ export default {
   PharmacyStockTransaction,
   PrescriptionDispensing,
   PrescriptionDispensingItem,
+  InvestigationSample,
+  InvestigationResult,
+  BillingService,
+  Invoice,
+  InvoiceItem,
+  Payment,
+  Receipt,
+  Ward,
+  Bed,
+  IpdAdmission,
+  IpdBedTransfer,
+  IpdProgressNote,
+  IpdNursingNote,
+  DischargeSummary,
+  DischargeMedication,
+  Notification,
 };
+
+// ==========================================
+// Notification Associations (Phase 11)
+// ==========================================
+
+Hospital.hasMany(Notification, {
+  foreignKey: 'hospitalId',
+  as: 'notifications',
+  onDelete: 'CASCADE',
+});
+Notification.belongsTo(Hospital, {
+  foreignKey: 'hospitalId',
+  as: 'hospital',
+});
+
+User.hasMany(Notification, {
+  foreignKey: 'recipientUserId',
+  as: 'notifications',
+  onDelete: 'CASCADE',
+});
+Notification.belongsTo(User, {
+  foreignKey: 'recipientUserId',
+  as: 'recipient',
+});
+
+Patient.hasMany(Notification, {
+  foreignKey: 'patientId',
+  as: 'notifications',
+  onDelete: 'SET NULL',
+});
+Notification.belongsTo(Patient, {
+  foreignKey: 'patientId',
+  as: 'patient',
+});
+
 
 
 

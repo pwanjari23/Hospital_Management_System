@@ -66,6 +66,16 @@ Encounter.init(
       },
       onDelete: 'SET NULL',
     },
+    ipdAdmissionId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      field: 'ipd_admission_id',
+      references: {
+        model: 'ipd_admissions',
+        key: 'id',
+      },
+      onDelete: 'SET NULL',
+    },
     encounterType: {
       type: DataTypes.ENUM(
         'OPD',
@@ -73,6 +83,7 @@ Encounter.init(
         'EECP_CONSULTATION',
         'EECP_SESSION',
         'EMERGENCY',
+        'IPD',
         'OTHER'
       ),
       allowNull: false,

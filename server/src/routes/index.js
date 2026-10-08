@@ -16,6 +16,12 @@ import prescriptionRoutes from './prescription.routes.js';
 import investigationOrderRoutes from './investigationOrder.routes.js';
 import eecpRoutes from './eecp.routes.js';
 import pharmacyRoutes from './pharmacy.routes.js';
+import laboratoryRoutes from './laboratory.routes.js';
+import billingRoutes from './billing.routes.js';
+import ipdRoutes from './ipd.routes.js';
+import reportRoutes from './report.routes.js';
+import notificationRoutes from './notification.routes.js';
+import documentRoutes from './document.routes.js';
 
 const apiRouter = Router();
 
@@ -65,7 +71,24 @@ apiRouter.use('/eecp', eecpRoutes);
 // Phase 8A: Pharmacy Inventory & Prescription Dispensing
 apiRouter.use('/pharmacy', pharmacyRoutes);
 
+// Phase 8B: Laboratory & Investigation Results
+apiRouter.use('/laboratory', laboratoryRoutes);
+
+// Phase 8C: Billing, Payments & Receipts
+apiRouter.use('/billing', billingRoutes);
+
+// Phase 9A: IPD Admission, Ward & Bed Management
+apiRouter.use('/ipd', ipdRoutes);
+
+// Phase 10: Central Reports & Analytics
+apiRouter.use('/reports', reportRoutes);
+
+// Phase 11: Notifications, Documents, Printing & Hospital Branding
+apiRouter.use('/notifications', notificationRoutes);
+apiRouter.use('/documents', documentRoutes);
+
 export default apiRouter;
+
 
 
 

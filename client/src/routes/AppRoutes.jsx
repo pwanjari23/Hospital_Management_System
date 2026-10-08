@@ -26,6 +26,20 @@ import EecpSessionWorkspacePage from '../pages/hospital-admin/EecpSessionWorkspa
 import PharmacyDashboardPage from '../pages/hospital-admin/PharmacyDashboardPage';
 import PharmacyInventoryPage from '../pages/hospital-admin/PharmacyInventoryPage';
 import PharmacyDispensingWorkspacePage from '../pages/hospital-admin/PharmacyDispensingWorkspacePage';
+import LaboratoryDashboardPage from '../pages/hospital-admin/LaboratoryDashboardPage';
+import LaboratoryResultWorkspacePage from '../pages/hospital-admin/LaboratoryResultWorkspacePage';
+import BillingDashboardPage from '../pages/hospital-admin/BillingDashboardPage';
+import BillingInvoicesPage from '../pages/hospital-admin/BillingInvoicesPage';
+import InvoiceDetailsPage from '../pages/hospital-admin/InvoiceDetailsPage';
+import BillingServicesPage from '../pages/hospital-admin/BillingServicesPage';
+import IpdDashboardPage from '../pages/hospital-admin/IpdDashboardPage';
+import WardManagementPage from '../pages/hospital-admin/WardManagementPage';
+import BedManagementPage from '../pages/hospital-admin/BedManagementPage';
+import IpdAdmissionsPage from '../pages/hospital-admin/IpdAdmissionsPage';
+import IpdAdmissionDetailsPage from '../pages/hospital-admin/IpdAdmissionDetailsPage';
+import ReportsPage from '../pages/hospital-admin/ReportsPage';
+import NotificationsPage from '../pages/hospital-admin/NotificationsPage';
+import HospitalBrandingPage from '../pages/hospital-admin/HospitalBrandingPage';
 
 const HOSPITAL_STAFF_ROLES = [
   'HOSPITAL_ADMIN',
@@ -161,6 +175,100 @@ export default function AppRoutes() {
           }
         />
 
+        {/* Phase 8B: Laboratory & Investigation Results */}
+        <Route
+          path="laboratory"
+          element={
+            <ProtectedRoute allowedRoles={['HOSPITAL_ADMIN', 'LAB_STAFF', 'DOCTOR', 'NURSE', 'RECEPTIONIST']}>
+              <LaboratoryDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="laboratory/workspace/:orderId"
+          element={
+            <ProtectedRoute allowedRoles={['HOSPITAL_ADMIN', 'LAB_STAFF', 'NURSE']}>
+              <LaboratoryResultWorkspacePage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Phase 8C: Billing, Invoices, Payments & Receipts */}
+        <Route
+          path="billing"
+          element={
+            <ProtectedRoute allowedRoles={['HOSPITAL_ADMIN', 'RECEPTIONIST']}>
+              <BillingDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="billing/invoices"
+          element={
+            <ProtectedRoute allowedRoles={['HOSPITAL_ADMIN', 'RECEPTIONIST', 'DOCTOR', 'NURSE', 'PHARMACIST', 'LAB_STAFF']}>
+              <BillingInvoicesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="billing/invoices/:invoiceId"
+          element={
+            <ProtectedRoute allowedRoles={['HOSPITAL_ADMIN', 'RECEPTIONIST', 'DOCTOR', 'NURSE', 'PHARMACIST', 'LAB_STAFF']}>
+              <InvoiceDetailsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="billing/services"
+          element={
+            <ProtectedRoute allowedRoles={['HOSPITAL_ADMIN', 'RECEPTIONIST']}>
+              <BillingServicesPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Phase 9A: IPD Admission, Ward & Bed Management */}
+        <Route
+          path="ipd"
+          element={
+            <ProtectedRoute allowedRoles={['HOSPITAL_ADMIN', 'RECEPTIONIST', 'DOCTOR', 'NURSE', 'PHARMACIST', 'LAB_STAFF']}>
+              <IpdDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="ipd/wards"
+          element={
+            <ProtectedRoute allowedRoles={['HOSPITAL_ADMIN']}>
+              <WardManagementPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="ipd/beds"
+          element={
+            <ProtectedRoute allowedRoles={['HOSPITAL_ADMIN', 'RECEPTIONIST', 'DOCTOR', 'NURSE']}>
+              <BedManagementPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="ipd/admissions"
+          element={
+            <ProtectedRoute allowedRoles={['HOSPITAL_ADMIN', 'RECEPTIONIST', 'DOCTOR', 'NURSE', 'PHARMACIST', 'LAB_STAFF']}>
+              <IpdAdmissionsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="ipd/admissions/:id"
+          element={
+            <ProtectedRoute allowedRoles={['HOSPITAL_ADMIN', 'RECEPTIONIST', 'DOCTOR', 'NURSE', 'PHARMACIST', 'LAB_STAFF']}>
+              <IpdAdmissionDetailsPage />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Patients Management (Module 4) */}
         <Route path="patients" element={<PatientsPage />} />
 
@@ -206,6 +314,36 @@ export default function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={['HOSPITAL_ADMIN']}>
               <HospitalSettingsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Phase 10: Reports & Analytics */}
+        <Route
+          path="reports"
+          element={
+            <ProtectedRoute allowedRoles={['HOSPITAL_ADMIN', 'DOCTOR', 'NURSE']}>
+              <ReportsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Phase 11: Notification Center */}
+        <Route
+          path="notifications"
+          element={
+            <ProtectedRoute allowedRoles={HOSPITAL_STAFF_ROLES}>
+              <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Phase 11: Hospital Branding & Print Settings */}
+        <Route
+          path="branding"
+          element={
+            <ProtectedRoute allowedRoles={['HOSPITAL_ADMIN']}>
+              <HospitalBrandingPage />
             </ProtectedRoute>
           }
         />

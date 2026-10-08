@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import NotificationBell from '../components/notifications/NotificationBell';
 
 export default function HospitalAdminLayout() {
   const { user, logout } = useAuth();
@@ -20,10 +21,13 @@ export default function HospitalAdminLayout() {
 
   const isHospitalAdmin = user?.role === 'HOSPITAL_ADMIN';
 
-  const navItems = [
+  const role = user?.role || 'STAFF';
+
+  const allNavItems = [
     {
       name: 'Dashboard',
       path: '/hospital-admin/dashboard',
+      roles: ['HOSPITAL_ADMIN', 'RECEPTIONIST', 'DOCTOR', 'NURSE', 'PHARMACIST', 'LAB_STAFF'],
       icon: (
         <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -38,6 +42,7 @@ export default function HospitalAdminLayout() {
     {
       name: 'Appointments',
       path: '/hospital-admin/appointments',
+      roles: ['HOSPITAL_ADMIN', 'RECEPTIONIST', 'DOCTOR', 'NURSE'],
       icon: (
         <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -52,6 +57,7 @@ export default function HospitalAdminLayout() {
     {
       name: 'Doctor Roster',
       path: '/hospital-admin/doctor-roster',
+      roles: ['HOSPITAL_ADMIN', 'RECEPTIONIST', 'DOCTOR', 'NURSE'],
       icon: (
         <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -66,6 +72,7 @@ export default function HospitalAdminLayout() {
     {
       name: 'Clinical Encounters',
       path: '/hospital-admin/encounters',
+      roles: ['HOSPITAL_ADMIN', 'DOCTOR', 'NURSE', 'RECEPTIONIST'],
       icon: (
         <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -80,6 +87,7 @@ export default function HospitalAdminLayout() {
     {
       name: 'EECP Therapy',
       path: '/hospital-admin/eecp',
+      roles: ['HOSPITAL_ADMIN', 'DOCTOR', 'NURSE', 'RECEPTIONIST'],
       icon: (
         <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -94,6 +102,7 @@ export default function HospitalAdminLayout() {
     {
       name: 'Pharmacy',
       path: '/hospital-admin/pharmacy',
+      roles: ['HOSPITAL_ADMIN', 'PHARMACIST', 'DOCTOR', 'NURSE'],
       icon: (
         <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -106,8 +115,54 @@ export default function HospitalAdminLayout() {
       ),
     },
     {
+      name: 'Laboratory',
+      path: '/hospital-admin/laboratory',
+      roles: ['HOSPITAL_ADMIN', 'LAB_STAFF', 'DOCTOR', 'NURSE', 'RECEPTIONIST'],
+      icon: (
+        <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M9 3v11.382A2 2 0 018.17 16.1l-2.34 2.34A2 2 0 007.24 21H16.76a2 2 0 001.41-3.41l-2.34-2.34A2 2 0 0015 14.382V3M9 3h6M9 3H7m8 0h2"
+          />
+        </svg>
+      ),
+    },
+    {
+      name: 'Billing & Finance',
+      path: '/hospital-admin/billing',
+      roles: ['HOSPITAL_ADMIN', 'RECEPTIONIST'],
+      icon: (
+        <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z"
+          />
+        </svg>
+      ),
+    },
+    {
+      name: 'Inpatient (IPD)',
+      path: '/hospital-admin/ipd',
+      roles: ['HOSPITAL_ADMIN', 'RECEPTIONIST', 'DOCTOR', 'NURSE', 'PHARMACIST', 'LAB_STAFF'],
+      icon: (
+        <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+          />
+        </svg>
+      ),
+    },
+    {
       name: 'Patients',
       path: '/hospital-admin/patients',
+      roles: ['HOSPITAL_ADMIN', 'RECEPTIONIST', 'DOCTOR', 'NURSE'],
       icon: (
         <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -122,6 +177,7 @@ export default function HospitalAdminLayout() {
     {
       name: 'Doctors & Staff',
       path: '/hospital-admin/staff',
+      roles: ['HOSPITAL_ADMIN', 'DOCTOR', 'RECEPTIONIST'],
       icon: (
         <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -136,6 +192,7 @@ export default function HospitalAdminLayout() {
     {
       name: 'Departments',
       path: '/hospital-admin/departments',
+      roles: ['HOSPITAL_ADMIN', 'DOCTOR', 'RECEPTIONIST'],
       icon: (
         <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -150,6 +207,7 @@ export default function HospitalAdminLayout() {
     {
       name: 'Clinical Masters',
       path: '/hospital-admin/clinical-masters',
+      roles: ['HOSPITAL_ADMIN', 'DOCTOR'],
       icon: (
         <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -161,26 +219,70 @@ export default function HospitalAdminLayout() {
         </svg>
       ),
     },
-    ...(isHospitalAdmin
-      ? [
-          {
-            name: 'Settings',
-            path: '/hospital-admin/settings',
-            icon: (
-              <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-            ),
-          },
-        ]
-      : []),
+    {
+      name: 'Reports & Analytics',
+      path: '/hospital-admin/reports',
+      roles: ['HOSPITAL_ADMIN', 'DOCTOR', 'NURSE'],
+      icon: (
+        <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+          />
+        </svg>
+      ),
+    },
+    {
+      name: 'Notifications',
+      path: '/hospital-admin/notifications',
+      roles: ['HOSPITAL_ADMIN', 'RECEPTIONIST', 'DOCTOR', 'NURSE', 'PHARMACIST', 'LAB_STAFF'],
+      icon: (
+        <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+          />
+        </svg>
+      ),
+    },
+    {
+      name: 'Hospital Branding',
+      path: '/hospital-admin/branding',
+      roles: ['HOSPITAL_ADMIN'],
+      icon: (
+        <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+          />
+        </svg>
+      ),
+    },
+    {
+      name: 'Settings',
+      path: '/hospital-admin/settings',
+      roles: ['HOSPITAL_ADMIN'],
+      icon: (
+        <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+          />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      ),
+    },
   ];
+
+  const navItems = allNavItems.filter((item) => !item.roles || item.roles.includes(role));
 
   const formatRoleLabel = (role) => {
     switch (role) {
@@ -243,6 +345,11 @@ export default function HospitalAdminLayout() {
 
           {/* User Profile & Sign Out */}
           <div className="flex items-center gap-4">
+            {/* Phase 11: Notification Center Bell */}
+            <NotificationBell />
+
+            <div className="h-6 w-px bg-navy-800 hidden md:block" />
+
             <div className="hidden md:flex flex-col text-right">
               <span className="text-sm font-semibold text-white">
                 {user?.name || 'Staff User'}

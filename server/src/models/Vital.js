@@ -23,13 +23,23 @@ Vital.init(
     },
     encounterId: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
       field: 'encounter_id',
       references: {
         model: 'encounters',
         key: 'id',
       },
       onDelete: 'CASCADE',
+    },
+    ipdAdmissionId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      field: 'ipd_admission_id',
+      references: {
+        model: 'ipd_admissions',
+        key: 'id',
+      },
+      onDelete: 'SET NULL',
     },
     patientId: {
       type: DataTypes.UUID,
@@ -133,6 +143,9 @@ Vital.init(
     indexes: [
       {
         fields: ['hospital_id', 'encounter_id'],
+      },
+      {
+        fields: ['hospital_id', 'ipd_admission_id'],
       },
       {
         fields: ['hospital_id', 'patient_id', 'recorded_at'],

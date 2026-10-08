@@ -5,6 +5,8 @@ import ConfirmationDialog from '../../components/common/ConfirmationDialog';
 import useAuth from '../../hooks/useAuth';
 import { calculateAge } from '../../utils/age';
 import pharmacyService from '../../services/pharmacyService';
+import billingService from '../../services/billingService';
+import ipdService from '../../services/ipdService';
 
 const BLOOD_GROUP_MAP = {
   A_POSITIVE: 'A+',
@@ -34,6 +36,13 @@ export default function PatientDetailsPage() {
   const [medicationHistory, setMedicationHistory] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const canViewPharmacyHistory = ['HOSPITAL_ADMIN', 'DOCTOR', 'NURSE', 'PHARMACIST'].includes(user?.role);
+
+  const [financialHistory, setFinancialHistory] = useState(null);
+  const [loadingFinance, setLoadingFinance] = useState(false);
+  const canViewBilling = ['HOSPITAL_ADMIN', 'RECEPTIONIST', 'DOCTOR', 'NURSE'].includes(user?.role);
+
+  const [ipdHistory, setIpdHistory] = useState([]);
+  const [loadingIpd, setLoadingIpd] = useState(false);
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -83,6 +92,44 @@ export default function PatientDetailsPage() {
       fetchHistory();
     }
   }, [canViewPharmacyHistory, id]);
+
+  useEffect(() => {
+    if (canViewBilling && id) {
+      const fetchFinance = async () => {
+        try {
+          setLoadingFinance(true);
+          const res = await billingService.getPatientFinancialHistory(id);
+          if (res.data) {
+            setFinancialHistory(res.data);
+          }
+        } catch (err) {
+          console.error('Failed to load patient financial history:', err);
+        } finally {
+          setLoadingFinance(false);
+        }
+      };
+      fetchFinance();
+    }
+  }, [canViewBilling, id]);
+
+  useEffect(() => {
+    if (id) {
+      const fetchIpd = async () => {
+        try {
+          setLoadingIpd(true);
+          const res = await ipdService.getPatientAdmissions(id);
+          if (res.data) {
+            setIpdHistory(res.data);
+          }
+        } catch (err) {
+          console.error('Failed to load patient IPD history:', err);
+        } finally {
+          setLoadingIpd(false);
+        }
+      };
+      fetchIpd();
+    }
+  }, [id]);
 
   const canEdit = ['HOSPITAL_ADMIN', 'RECEPTIONIST', 'DOCTOR', 'NURSE'].includes(user?.role);
   const canChangeStatus = user?.role === 'HOSPITAL_ADMIN';
@@ -453,6 +500,155 @@ export default function PatientDetailsPage() {
         </div>
       )}
 
+      {/* Patient Financial History */}
+      {canViewBilling && (
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-soft p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <h3 className="text-base font-bold text-slate-900 tracking-tight">Financial History</h3>
+              <p className="text-xs text-slate-500">Invoices, payments, receipts, and balance summary</p>
+            </div>
+            {financialHistory?.summary && (
+              <div className="flex items-center gap-4 text-xs font-semibold">
+                <span className="text-slate-600">
+                  Total Billed: ₹{Number(financialHistory.summary.totalBilled || 0).toLocaleString('en-IN')}
+                </span>
+                <span className="text-emerald-600">
+                  Total Paid: ₹{Number(financialHistory.summary.totalPaid || 0).toLocaleString('en-IN')}
+                </span>
+                <span className="text-amber-600">
+                  Outstanding: ₹{Number(financialHistory.summary.totalOutstanding || 0).toLocaleString('en-IN')}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {loadingFinance ? (
+            <p className="text-xs text-slate-400 py-4 text-center">Loading financial records...</p>
+          ) : !financialHistory || financialHistory.invoices?.length === 0 ? (
+            <p className="text-xs text-slate-400 py-4 text-center">No invoices recorded for this patient.</p>
+          ) : (
+            <div className="space-y-4">
+              {/* Invoices List */}
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                      <th className="py-2 px-3">Invoice #</th>
+                      <th className="py-2 px-3">Date</th>
+                      <th className="py-2 px-3 text-right">Total</th>
+                      <th className="py-2 px-3 text-right">Paid</th>
+                      <th className="py-2 px-3 text-right">Due</th>
+                      <th className="py-2 px-3">Status</th>
+                      <th className="py-2 px-3 text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 text-slate-700">
+                    {financialHistory.invoices.map((inv) => (
+                      <tr key={inv.id} className="hover:bg-slate-50/60">
+                        <td className="py-2.5 px-3 font-semibold text-slate-900 font-mono">{inv.invoiceNumber}</td>
+                        <td className="py-2.5 px-3 text-slate-500">
+                          {new Date(inv.invoiceDate).toLocaleDateString('en-IN')}
+                        </td>
+                        <td className="py-2.5 px-3 text-right font-medium text-slate-900 font-mono">
+                          ₹{Number(inv.totalAmount).toLocaleString('en-IN')}
+                        </td>
+                        <td className="py-2.5 px-3 text-right font-medium text-emerald-600 font-mono">
+                          ₹{Number(inv.paidAmount).toLocaleString('en-IN')}
+                        </td>
+                        <td className="py-2.5 px-3 text-right font-bold text-amber-600 font-mono">
+                          ₹{Number(inv.dueAmount).toLocaleString('en-IN')}
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700">
+                            {inv.status} • {inv.paymentStatus}
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3 text-center">
+                          <Link
+                            to={`/hospital-admin/billing/invoices/${inv.id}`}
+                            className="text-indigo-600 font-semibold hover:underline"
+                          >
+                            View
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* IPD Inpatient Admissions History */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-soft p-6 space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div>
+            <h3 className="text-base font-bold text-slate-800">Inpatient (IPD) History</h3>
+            <p className="text-xs text-slate-500">Chronological inpatient admissions and ward stays</p>
+          </div>
+          <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
+            {ipdHistory.length} Admission(s)
+          </span>
+        </div>
+
+        {loadingIpd ? (
+          <div className="text-center py-6 text-slate-400 text-xs">Loading inpatient history...</div>
+        ) : ipdHistory.length === 0 ? (
+          <div className="text-center py-6 text-slate-400 text-xs">
+            No inpatient admissions recorded for this patient.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider border-b border-slate-200">
+                <tr>
+                  <th className="py-2.5 px-3">Admission #</th>
+                  <th className="py-2.5 px-3">Admission Date</th>
+                  <th className="py-2.5 px-3">Doctor</th>
+                  <th className="py-2.5 px-3">Ward & Bed</th>
+                  <th className="py-2.5 px-3">Status</th>
+                  <th className="py-2.5 px-3 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-slate-700">
+                {ipdHistory.map((adm) => (
+                  <tr key={adm.id} className="hover:bg-slate-50/60">
+                    <td className="py-2.5 px-3 font-semibold text-slate-900 font-mono">
+                      {adm.admissionNumber}
+                    </td>
+                    <td className="py-2.5 px-3 text-slate-500">
+                      {adm.admissionDate} <span className="text-[10px] text-slate-400">{adm.admissionTime}</span>
+                    </td>
+                    <td className="py-2.5 px-3 font-medium text-slate-800">
+                      {adm.admittingDoctor?.name || '—'}
+                    </td>
+                    <td className="py-2.5 px-3">
+                      <span className="font-medium text-slate-800">{adm.ward?.wardName}</span>
+                      <span className="text-slate-400 font-mono ml-1">({adm.bed?.bedNumber})</span>
+                    </td>
+                    <td className="py-2.5 px-3">
+                      <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700">
+                        {adm.status}
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-3 text-center">
+                      <Link
+                        to={`/hospital-admin/ipd/admissions/${adm.id}`}
+                        className="text-teal-600 font-semibold hover:underline"
+                      >
+                        View Admission
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
       {/* Metadata Bar */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-soft p-4 px-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">

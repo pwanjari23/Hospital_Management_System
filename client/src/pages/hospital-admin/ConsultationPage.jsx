@@ -5,6 +5,7 @@ import prescriptionService from '../../services/prescriptionService';
 import investigationOrderService from '../../services/investigationOrderService';
 import { clinicalMasterService } from '../../services/clinicalMasterService';
 import eecpService from '../../services/eecpService';
+import laboratoryService from '../../services/laboratoryService';
 import ConfirmationDialog from '../../components/common/ConfirmationDialog';
 import useAuth from '../../hooks/useAuth';
 
@@ -106,6 +107,10 @@ export default function ConsultationPage() {
   // Complete consultation confirmation dialog
   const [confirmCompleteDialog, setConfirmCompleteDialog] = useState(false);
 
+  // Lab investigation results (finalized)
+  const [labResults, setLabResults] = useState([]);
+  const [labResultsLoading, setLabResultsLoading] = useState(false);
+
   // EECP Clinical Assessment State
   const [eecpAssessment, setEecpAssessment] = useState(null);
   const [eecpExpanded, setEecpExpanded] = useState(false);
@@ -192,6 +197,19 @@ export default function ConsultationPage() {
           if (enc.encounterType === 'EECP_CONSULTATION') {
             setEecpExpanded(true);
           }
+        }
+
+        // Load finalized lab investigation results for this encounter
+        try {
+          setLabResultsLoading(true);
+          const labRes = await laboratoryService.getEncounterResults(id);
+          if (labRes.success && labRes.data) {
+            setLabResults(labRes.data);
+          }
+        } catch {
+          // Lab results are optional, don't block the consultation load
+        } finally {
+          setLabResultsLoading(false);
         }
       }
     } catch (err) {
@@ -1096,6 +1114,91 @@ export default function ConsultationPage() {
               </div>
             )}
           </div>
+
+          {/* ── Lab Investigation Results (finalized results from lab) ── */}
+          {(labResults.length > 0 || labResultsLoading) && (
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-gradient-to-r from-emerald-50/60 to-white">
+                <div className="flex items-center gap-2">
+                  <span className="text-base">🔬</span>
+                  <h2 className="text-sm font-semibold text-slate-800">Lab Investigation Results</h2>
+                  {labResults.length > 0 && (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
+                      {labResults.length} Finalized
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="p-5">
+                {labResultsLoading ? (
+                  <div className="text-center text-xs text-slate-400 py-4">Loading results...</div>
+                ) : (
+                  <div className="space-y-3">
+                    {labResults.map((lr) => (
+                      <div
+                        key={lr.id}
+                        className={`p-4 rounded-xl border ${
+                          lr.abnormalFlag === 'CRITICAL'
+                            ? 'border-red-200 bg-red-50/50'
+                            : lr.abnormalFlag === 'ABNORMAL_HIGH' || lr.abnormalFlag === 'ABNORMAL_LOW'
+                            ? 'border-amber-200 bg-amber-50/50'
+                            : 'border-slate-200 bg-slate-50/60'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-sm font-semibold text-slate-800">
+                                {lr.investigationNameSnapshot || lr.investigation?.name || '—'}
+                              </span>
+                              {lr.abnormalFlag && lr.abnormalFlag !== 'NORMAL' && (
+                                <span
+                                  className={`inline-flex px-1.5 py-0.5 rounded text-[9px] font-bold border ${
+                                    lr.abnormalFlag === 'CRITICAL'
+                                      ? 'bg-red-100 text-red-700 border-red-300'
+                                      : 'bg-amber-100 text-amber-700 border-amber-300'
+                                  }`}
+                                >
+                                  {lr.abnormalFlag === 'CRITICAL' ? '⚠ CRITICAL' : lr.abnormalFlag.replace('_', ' ')}
+                                </span>
+                              )}
+                              <span className="text-[10px] text-emerald-700 font-medium">#{lr.resultNumber}</span>
+                            </div>
+                            <div className="mt-1 flex flex-wrap gap-4 text-sm">
+                              <div>
+                                <span className="text-xs text-slate-500 mr-1">Result:</span>
+                                <strong className="text-slate-800">
+                                  {lr.resultValue || '—'}{' '}
+                                  <span className="text-xs font-normal text-slate-500">{lr.resultUnit || ''}</span>
+                                </strong>
+                              </div>
+                              {lr.referenceRange && (
+                                <div>
+                                  <span className="text-xs text-slate-500 mr-1">Ref Range:</span>
+                                  <span className="text-slate-700 text-xs">{lr.referenceRange}</span>
+                                </div>
+                              )}
+                            </div>
+                            {lr.interpretation && (
+                              <p className="mt-1.5 text-xs text-slate-600 italic">{lr.interpretation}</p>
+                            )}
+                          </div>
+                          <div className="text-right text-[10px] text-slate-400 shrink-0">
+                            <div>Verified by: <strong>{lr.verifier?.name || lr.finalizer?.name || '—'}</strong></div>
+                            <div className="mt-0.5">
+                              {lr.finalizedAt
+                                ? new Date(lr.finalizedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+                                : '—'}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Section 6: Treatment Plan & Follow-up Advice */}
           <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs space-y-4">
