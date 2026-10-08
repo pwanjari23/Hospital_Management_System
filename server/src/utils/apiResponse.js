@@ -32,3 +32,16 @@ export const errorResponse = (
 
   return res.status(statusCode).json(response);
 };
+
+export const sendSuccess = (res, data = null, message = 'Success', statusCode = 200) => {
+  return successResponse(res, message, data, statusCode);
+};
+
+export const sendError = (
+  res,
+  message = 'Something went wrong',
+  statusCode = 500,
+  errors = null
+) => {
+  return errorResponse(res, message, statusCode, errors);
+};
